@@ -12,7 +12,6 @@ namespace core\Platform\Qq;
 use core\Cache\FileCache;
 use core\Common\ArrayHelper;
 use core\Common\Downloader;
-use core\Common\FFmpeg;
 use core\Http\Curl;
 
 class Qq extends Downloader
@@ -120,7 +119,9 @@ class Qq extends Downloader
     {
         $exKeyId = explode('.', $keyId);
 
-        if($exKeyId[1] > 10000){
+        if($exKeyId[1] > 100000){
+            $newKeyId = $exKeyId[0] . '.m' . substr($exKeyId[1], 3) . self::FILE_EXTENSION;
+        } elseif($exKeyId[1] > 10000){
             $newKeyId = $exKeyId[0] . '.p' . substr($exKeyId[1], 2) . '.' . $exKeyId[2] . self::FILE_EXTENSION;
         } else {
             $newKeyId = $keyId . self::FILE_EXTENSION;
@@ -144,14 +145,17 @@ class Qq extends Downloader
 
         $videosFileIdPrefix = '';
         $videoFileFormat = $videoFi[0]['id'];
-        if($videoFi[0]['id'] > 10000){
+        $this->videoQuality = $videoFi[0]['cname'];
+
+        if($videoFi[0]['id'] > 100000){
+            $videosFileIdPrefix = '.m' . substr($videoFi[0]['id'], 3);
+        } elseif($videoFi[0]['id'] > 10000){
             $videosFileIdPrefix = '.p'. substr($videoFileFormat, 2);
         }
 
         $videoFileName = $vid . $videosFileIdPrefix . self::FILE_EXTENSION;
 
         $videosKey = $this->getKey($videoFileFormat, $videoFileName);
-
 
         $uiLen = count($videosListInfo['vl']['vi'][0]['ul']['ui']);
 
