@@ -1,5 +1,5 @@
 # phpVideos
-php 写的视频下载工具，现支持：Youku、Miaopai
+php 写的视频下载工具，现支持：Youku、Miaopai、腾讯、XVideos
 
 # 环境依赖
 *   PHP >= 7.1.3
