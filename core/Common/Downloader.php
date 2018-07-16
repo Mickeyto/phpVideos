@@ -21,6 +21,7 @@ class Downloader
     public $ffmpFileListTxt = './filelist.txt';
     public $videosTitle = '';
     public $requestUrl = '';
+    public $videoQuality = '';
 
     /**
      * @var CliProgressBar
@@ -43,6 +44,7 @@ class Downloader
     public function downloadFile(string $url,string $fileName,array $options=[], $fileOptions=[])
     {
         $this->outputVideosTitle($fileName);
+        $this->outputVideoQuality();
 
         $this->checkFileExists();
 
@@ -102,6 +104,11 @@ class Downloader
     public function outputVideosTitle(string $videosTitle)
     {
         echo "{$videosTitle}：\n";
+    }
+
+    public function outputVideoQuality()
+    {
+        echo PHP_EOL . "Video Quality：      \033[0;32m{$this->videoQuality}\033[0m   ". PHP_EOL . PHP_EOL;
     }
 
     public static function randIp()
