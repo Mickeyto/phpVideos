@@ -32,6 +32,10 @@ class FileCache
         }
 
         $expireTime = $expire;
+        if($expire > 0){
+            $expireTime = time() + $expire;
+        }
+
         $data = serialize([$value, $expireTime]);
 
         $fileName = md5($key);
