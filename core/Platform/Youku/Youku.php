@@ -156,9 +156,4 @@ class Youku extends Downloader
         return $contents;
     }
 
-    public function __destruct()
-    {
-        unset($this->cliProgressBar);
-    }
-
 }

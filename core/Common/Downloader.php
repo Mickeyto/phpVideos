@@ -92,7 +92,7 @@ class Downloader
         if($this->videosTitle){
             $filePath = $this->rootPath . $this->videosTitle . $this->fileExt;
             if(file_exists($filePath)){
-                $this->success();
+                echo "\033[0;32mThis folder already contains a file named\033[0m".PHP_EOL;
                 exit(0);
             }
         }
@@ -103,7 +103,7 @@ class Downloader
      */
     public function outputVideosTitle(string $videosTitle)
     {
-        echo "{$videosTitle}：\n";
+        echo PHP_EOL . "Title：    {$videosTitle}". PHP_EOL;
     }
 
     public function outputVideoQuality()
@@ -215,7 +215,7 @@ class Downloader
 
     public function __destruct()
     {
-
+        unset($this->cliProgressBar);
     }
 
 }
