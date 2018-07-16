@@ -1,8 +1,19 @@
 <?php
 include_once "autoLoad.php";
 
-$args = array_slice($argv, 1);
+function checkVersion()
+{
+    $curlVersion = curl_version()['version'];
+    $phpVersion = version_compare(PHP_VERSION, '7.1.3', '>=');
 
+    if(('7.37.0' > $curlVersion) && !$phpVersion){
+        die("PHP version\e[31m must >= 7.1 and curl version >= 7.37.0\e[0m\n");
+    }
+}
+
+checkVersion();
+
+$args = array_slice($argv, 1);
 if(empty($args)){
     printf("请传入参数 \n");
     die;

@@ -95,8 +95,8 @@ class Youku extends Downloader
         $json = self::get($youkuVideoUrl, $httpReferer, $vid);
 
         if(isset($json['data']['stream'])){
-            $videosTile = $json['data']['video']['title'];
-            $this->videosTitle = str_replace(' ', '-',$videosTile);
+            $videosTitle = $json['data']['video']['title'];
+            $this->videosTitle = str_replace(' ', '-',$videosTitle);
             $videosInfo = ArrayHelper::multisort($json['data']['stream'], 'width', SORT_DESC);
 
             foreach($videosInfo[0]['segs'] as $key => $value){

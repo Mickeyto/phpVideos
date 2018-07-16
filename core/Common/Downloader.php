@@ -20,6 +20,7 @@ class Downloader
     public $tempSaveFiles = [];
     public $ffmpFileListTxt = './filelist.txt';
     public $videosTitle = '';
+    public $requestUrl = '';
 
     /**
      * @var CliProgressBar
@@ -125,7 +126,7 @@ class Downloader
                 "Accept-Encoding: gzip, deflate, br",
                 "Accept-Language: zh-CN,en-US;q=0.7,en;q=0.3",
                 "Host: v.youku.com",
-                "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:62.0) Gecko/20100101 Firefox/62.0",
+                "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
                 "HTTP_X_FORWARDED_FOR: {$ip}"
             ],
             CURLOPT_NOPROGRESS => false,
