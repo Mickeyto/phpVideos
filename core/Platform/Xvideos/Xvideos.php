@@ -74,7 +74,7 @@ class Xvideos extends Downloader
         $videosInfo = $this->getVideosInfo($videoId);
 
         $this->videoQuality = $videosInfo['type'];
-        $this->downloadFile($videosInfo['url'], $this->videosTitle.$this->fileExt);
+        $this->downloadFile($videosInfo['url'], $this->videosTitle);
         $this->success();
     }
 

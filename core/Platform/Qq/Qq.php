@@ -165,7 +165,7 @@ class Qq extends Downloader
 
         $requestVideosUrl = $videosUrl . $fileKeyId . '?vkey='.$videosKey['key'];
 
-        $this->downloadFile($requestVideosUrl, $this->videosTitle . self::FILE_EXTENSION);
+        $this->downloadFile($requestVideosUrl, $this->videosTitle);
 
         $this->success($this->ffmpFileListTxt);
 
