@@ -105,13 +105,13 @@ class Youku extends Downloader
                 $fileSize = $value['size'];
                 $fileExt = explode('?', $value['cdn_url'])[0];
                 $fileExt = '.' . pathinfo($fileExt, PATHINFO_EXTENSION);
-                $fileName = $this->videosTitle . '-' . $key . $fileExt;
+                $fileName = $this->videosTitle . '-' . $key;
 
                 $fileOptions = [
                     'fileSize' => $fileSize,
                 ];
 
-                $this->writeFileLog($fileName)->downloadFile($value['cdn_url'], $fileName, [], $fileOptions);
+                $this->writeFileLog($fileName.$this->fileExt)->downloadFile($value['cdn_url'], $fileName, [], $fileOptions);
 
             }
 

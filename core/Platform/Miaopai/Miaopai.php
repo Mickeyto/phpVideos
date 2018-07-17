@@ -52,9 +52,9 @@ class Miaopai extends Downloader
             $videosUrl = $matches[1][0];
             $fileExt = explode('?', $videosUrl)[0];
             $fileExt = '.' . pathinfo($fileExt, PATHINFO_EXTENSION);
-            $fileName = $this->videosTitle . '-0' . $fileExt;
+            $fileName = $this->videosTitle . '-0';
 
-            $this->writeFileLog($fileName)->downloadFile($videosUrl, $fileName); //下载
+            $this->writeFileLog($fileName.$this->fileExt)->downloadFile($videosUrl, $fileName); //下载
 
             FFmpeg::concatToMp4($this->videosTitle, './Videos/', $this->ffmpFileListTxt);
 
