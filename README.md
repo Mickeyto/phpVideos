@@ -1,5 +1,5 @@
 # phpVideos
-php 写的视频下载工具，现支持：Youku、Miaopai、腾讯、XVideos
+php 写的视频下载工具，现支持：Youku、Miaopai、腾讯、XVideos、Pornhub
 
 # 环境依赖
 *   PHP >= 7.1.3
@@ -12,4 +12,4 @@ php 写的视频下载工具，现支持：Youku、Miaopai、腾讯、XVideos
 #   使用
 php start 'link_address'
 
-![image](https://preview.ibb.co/cqJ8Bo/Jul_14_2018_15_51_58.gif)
+![image](https://image.ibb.co/b926ZJ/Jul_16_2018_19_41_12.gif)
