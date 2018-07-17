@@ -11,7 +11,7 @@ class Domain
 {
     public static function match(string $url,int $index=1):?string
     {
-        $preg = '/([a-z0-9][-a-z0-9]{0,62})\.(com\.cn|com\.hk|cn|com|net|edu|gov|biz|org|info|pro|name|xxx|xyz|be|me|top|cc|tv|tt)/';
+        $preg = '/([a-z0-9][-a-z0-9]{0,62})\.(com\.cn|com\.hk|cn|com|net|edu|gov|biz|org|info|pro|name|xxx|xyz|be|me|top|cc|tv|tt|space)/';
 
         preg_match_all($preg, $url, $matches);
 
