@@ -14,10 +14,11 @@ class Curl
     /**
      * @param string $url
      * @param string $httpReferer
+     * @param array $options
      * @return array|null
      * @throws \ErrorException
      */
-    public static function get(string $url,string $httpReferer):?array
+    public static function get(string $url,string $httpReferer, $options=[]):?array
     {
         $cache = (new FileCache())->get($url);
 
@@ -29,6 +30,10 @@ class Curl
         } else {
             $ch = curl_init();
             $defaultOptions = self::defaultOptions($url, $httpReferer);
+            if($options){
+                $defaultOptions = $options + $defaultOptions;
+            }
+
             curl_setopt_array($ch, $defaultOptions);
             $contents = curl_exec($ch);
             $curlInfo = curl_getinfo($ch);
@@ -79,7 +84,6 @@ class Curl
                 "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                 "Accept-Encoding: gzip, deflate, br",
                 "Accept-Language: zh-CN,en-US;q=0.7,en;q=0.3",
-                "Host: https://v.youku.com",
                 "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
                 "HTTP_X_FORWARDED_FOR: {$ip}"
             ]

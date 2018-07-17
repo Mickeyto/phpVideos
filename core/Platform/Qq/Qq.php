@@ -139,7 +139,8 @@ class Qq extends Downloader
         $videosListInfo = self::getVideosInfo($vid);
 
         $videosTitle = $videosListInfo['vl']['vi'][0]['ti'];
-        $this->videosTitle = str_replace(' ', '-', $videosTitle);
+
+        $this->setVideosTitle($videosTitle);
 
         $videoFi = ArrayHelper::multisort($videosListInfo['fl']['fi'], 'br', SORT_DESC);
 

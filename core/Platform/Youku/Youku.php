@@ -96,7 +96,9 @@ class Youku extends Downloader
 
         if(isset($json['data']['stream'])){
             $videosTitle = $json['data']['video']['title'];
-            $this->videosTitle = str_replace(' ', '-',$videosTitle);
+
+            $this->setVideosTitle($videosTitle);
+
             $videosInfo = ArrayHelper::multisort($json['data']['stream'], 'width', SORT_DESC);
 
             foreach($videosInfo[0]['segs'] as $key => $value){

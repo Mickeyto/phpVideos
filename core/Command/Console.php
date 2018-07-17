@@ -13,7 +13,7 @@ class Console
 {
     public static function stdin()
     {
-        return fgets(STDIN);
+        return rtrim(fgets(STDIN), PHP_EOL);
     }
 
     public static function stdout($string)

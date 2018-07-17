@@ -45,8 +45,9 @@ class Miaopai extends Downloader
             $element = $dom->documentElement;
             $titleItem = $element->getElementsByTagName('title');
 
-            $videosTile = $titleItem->item(0)->textContent;
-            $this->videosTitle = str_replace(' ', '-',$videosTile);
+            $videosTitle = $titleItem->item(0)->textContent;
+
+            $this->setVideosTitle($videosTitle);
 
             $videosUrl = $matches[1][0];
             $fileExt = explode('?', $videosUrl)[0];
