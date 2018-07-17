@@ -56,7 +56,7 @@ class Downloader
 
         $this->checkDirectory();
 
-        $file = $this->rootPath . $fileName;
+        $file = $this->rootPath . $fileName . $this->fileExt;
         $defaultOptions = self::defaultOptions($file);
         if($options){
             array_merge($defaultOptions, $options);
@@ -100,10 +100,21 @@ class Downloader
 
     /**
      * @param string $videosTitle
+     * @return Downloader
+     */
+    public function setVideosTitle(string $videosTitle):self
+    {
+        $this->videosTitle = str_replace([' ', '\\', '/'], '-',$videosTitle);
+
+        return $this;
+    }
+
+    /**
+     * @param string $videosTitle
      */
     public function outputVideosTitle(string $videosTitle)
     {
-        echo PHP_EOL . "Title：    {$videosTitle}". PHP_EOL;
+        echo PHP_EOL . "Title：    \e[0;32m{$videosTitle}\e[0m". PHP_EOL;
     }
 
     public function outputVideoQuality()
