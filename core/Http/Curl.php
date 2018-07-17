@@ -15,10 +15,12 @@ class Curl
      * @param string $url
      * @param string $httpReferer
      * @param array $options
+     * @param bool $resCache
+     * @param bool $ip
      * @return array|null
      * @throws \ErrorException
      */
-    public static function get(string $url,string $httpReferer, $options=[]):?array
+    public static function get(string $url,string $httpReferer, $options=[], $resCache=true, $ip=false):?array
     {
         $cache = (new FileCache())->get($url);
 
@@ -29,7 +31,7 @@ class Curl
             ];
         } else {
             $ch = curl_init();
-            $defaultOptions = self::defaultOptions($url, $httpReferer);
+            $defaultOptions = self::defaultOptions($url, $httpReferer, $ip);
             if($options){
                 $defaultOptions = $options + $defaultOptions;
             }
@@ -44,7 +46,9 @@ class Curl
                 $contents = null;
             }
 
-            (new FileCache())->set($url, $contents);
+            if($resCache){
+                (new FileCache())->set($url, $contents);
+            }
         }
 
         return [
@@ -60,7 +64,7 @@ class Curl
 
     public static function randIp()
     {
-        return rand(50,250).".".rand(50,250).".".rand(50,250).".".rand(50,250);
+        return mt_rand(20,250).".".mt_rand(20,250).".".mt_rand(20,250).".".mt_rand(20,250);
     }
 
     /**
@@ -85,7 +89,8 @@ class Curl
                 "Accept-Encoding: gzip, deflate, br",
                 "Accept-Language: zh-CN,en-US;q=0.7,en;q=0.3",
                 "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
-                "HTTP_X_FORWARDED_FOR: {$ip}"
+                "HTTP_X_FORWARDED_FOR: {$ip}",
+                "CLIENT-IP: {$ip}"
             ]
         ];
     }
