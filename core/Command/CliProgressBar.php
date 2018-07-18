@@ -95,7 +95,7 @@ class CliProgressBar
      * @param int $endColor 0 重置颜色
      * @return $this
      */
-    public function setColor($startColor=32, $endColor=0)
+    public function setColor(int $startColor=32, int $endColor=0):self
     {
         $this->colors = [
             sprintf(self::COLOR_FORMAT, $startColor),
@@ -108,7 +108,7 @@ class CliProgressBar
     /**
      * @return $this
      */
-    public function colorToGreen()
+    public function colorToGreen():self
     {
         $this->setColor(32);
         return $this;
@@ -117,7 +117,7 @@ class CliProgressBar
     /**
      * @return $this
      */
-    public function colorToRed()
+    public function colorToRed():self
     {
         $this->setColor(31);
         return $this;
@@ -133,7 +133,10 @@ class CliProgressBar
         return $this;
     }
 
-    public function getDefaultChar()
+    /**
+     * @return string
+     */
+    public function getDefaultChar():?string
     {
         return $this->defaultChar;
     }
@@ -141,7 +144,7 @@ class CliProgressBar
     /**
      * @return string
      */
-    public function draw()
+    public function draw():string
     {
         $step = $this->getStep();
         $currentStep = $this->getCurrentStep();

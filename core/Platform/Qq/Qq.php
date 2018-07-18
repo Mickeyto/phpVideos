@@ -18,7 +18,7 @@ class Qq extends Downloader
 {
     const FILE_EXTENSION = '.mp4';
 
-    public function __construct($url)
+    public function __construct(string $url)
     {
         $this->requestUrl = $url;
     }
@@ -50,7 +50,7 @@ class Qq extends Downloader
      * @return bool|string
      * @throws \ErrorException
      */
-    public function getVid()
+    public function getVid():?string
     {
         //https://v.qq.com/x/cover/m441e3rjq9kwpsc/h00251u5sdp.html?
         $baseName = pathinfo($this->requestUrl, PATHINFO_BASENAME);
@@ -96,7 +96,7 @@ class Qq extends Downloader
      * @return mixed
      * @throws \ErrorException
      */
-    public function getKey($format,string $fileName)
+    public function getKey($format,string $fileName):array
     {
         //https://h5vv.video.qq.com/getkey?otype=json&vid=t0195b4eoyw&format=10701&filename=t0195b4eoyw.p701.mp4&platform=1
         $getKeyUrl = 'https://h5vv.video.qq.com/getkey?otype=ojson&vid='. $this->getVid() .'&format='. $format .'&filename='. $fileName . '&platform=1';
@@ -115,7 +115,11 @@ class Qq extends Downloader
         throw new \ErrorException('无法获取 key');
     }
 
-    public function getKeyId(string $keyId)
+    /**
+     * @param string $keyId
+     * @return string
+     */
+    public function getKeyId(string $keyId):string
     {
         $exKeyId = explode('.', $keyId);
 
@@ -133,7 +137,7 @@ class Qq extends Downloader
     /**
      * @throws \ErrorException
      */
-    public function download()
+    public function download():void
     {
         $vid = $this->getVid();
         $videosListInfo = self::getVideosInfo($vid);

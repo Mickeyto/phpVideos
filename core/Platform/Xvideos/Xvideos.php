@@ -24,10 +24,10 @@ class Xvideos extends Downloader
 
     /**
      * @param $videoId
-     * @return bool|null
+     * @return array|bool|null
      * @throws \ErrorException
      */
-    public function getVideosInfo($videoId)
+    public function getVideosInfo(string $videoId):?array
     {
         $jsonUrl = 'https://www.xvideos.com/html5player/getvideo/'. $videoId .'/2';
 
@@ -63,7 +63,7 @@ class Xvideos extends Downloader
     /**
      * @throws \ErrorException
      */
-    public function download()
+    public function download():void
     {
         $urlInfo = parse_url($this->requestUrl, PHP_URL_PATH);
         $urlInfo = explode('/', $urlInfo);

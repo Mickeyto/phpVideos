@@ -17,7 +17,7 @@ class FFmpeg
      * @param string $fileListText
      * @return string
      */
-    public static function concatToMp4(string $outFileName,string $outputPath='./Videos/', string $fileListText='./filelist.txt')
+    public static function concatToMp4(string $outFileName,string $fileListText, string $outputPath='./Videos/'):?string
     {
         $outFileName .= '.mp4';
         $outputPath .= $outFileName;

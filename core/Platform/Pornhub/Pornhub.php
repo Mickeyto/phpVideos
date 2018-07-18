@@ -16,15 +16,16 @@ class Pornhub extends Downloader
 {
     public $pornhubHtmlFile = './pornhub.html';
 
-    public function __construct($url)
+    public function __construct(string $url)
     {
         $this->requestUrl = $url;
     }
 
     /**
+     * @return bool|null|string
      * @throws \ErrorException
      */
-    public function getVideosJson()
+    public function getVideosJson():?string
     {
         $videosJsonCache = (new FileCache())->get($this->requestUrl);
         if($videosJsonCache){
@@ -62,7 +63,11 @@ class Pornhub extends Downloader
         return $matches[1][0] . '}';
     }
 
-    public function getVideosList($videosJson)
+    /**
+     * @param $videosJson
+     * @return array
+     */
+    public function getVideosList($videosJson):array
     {
         $videosLists = json_decode($videosJson, true);
 
@@ -81,7 +86,7 @@ class Pornhub extends Downloader
     /**
      * @throws \ErrorException
      */
-    public function download()
+    public function download():void
     {
         $videosJson = $this->getVideosJson();
         $videosList = $this->getVideosList($videosJson);

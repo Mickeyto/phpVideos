@@ -15,12 +15,11 @@ use core\Cache\FileCache;
 
 class Youku extends Downloader
 {
-    public $url = '';
     public $vid = '';
 
     public function __construct($url='')
     {
-        $this->url = $url;
+        $this->requestUrl = $url;
     }
 
     public function getClientTs():float
@@ -66,11 +65,11 @@ class Youku extends Downloader
 
     public function getVid():?string
     {
-        if(empty($this->url)){
+        if(empty($this->requestUrl)){
             return '';
         }
         $rule  = '/id_(.+?).html/';
-        preg_match_all($rule, $this->url, $matches);
+        preg_match_all($rule, $this->requestUrl, $matches);
         if($matches){
             return $matches[1][0];
         }
@@ -81,7 +80,7 @@ class Youku extends Downloader
     /**
      * @throws \ErrorException
      */
-    public function download()
+    public function download():void
     {
         $vid = $this->getVid();
         $ckey = $this->getCKey();
@@ -101,10 +100,9 @@ class Youku extends Downloader
 
             $videosInfo = ArrayHelper::multisort($json['data']['stream'], 'width', SORT_DESC);
 
+            $this->outputVideosTitle();
             foreach($videosInfo[0]['segs'] as $key => $value){
                 $fileSize = $value['size'];
-                $fileExt = explode('?', $value['cdn_url'])[0];
-                $fileExt = '.' . pathinfo($fileExt, PATHINFO_EXTENSION);
                 $fileName = $this->videosTitle . '-' . $key;
 
                 $fileOptions = [
@@ -115,7 +113,7 @@ class Youku extends Downloader
 
             }
 
-            FFmpeg::concatToMp4($this->videosTitle, './Videos/');
+            FFmpeg::concatToMp4($this->videosTitle, $this->ffmpFileListTxt, './Videos/');
 
             $this->deleteTempSaveFiles();
             $this->success($this->ffmpFileListTxt);

@@ -29,7 +29,7 @@ class Downloader
     public $cliProgressBar;
 
 
-    public function download()
+    public function download():void
     {
 
     }
@@ -39,11 +39,11 @@ class Downloader
      * @param string $fileName
      * @param array $options
      * @param array $fileOptions
-     * @return string
+     * @return mixed
      */
     public function downloadFile(string $url,string $fileName,array $options=[], $fileOptions=[])
     {
-        $this->outputVideosTitle($fileName);
+        $this->outputVideosTitle('Download File', $fileName);
         $this->outputVideoQuality();
 
         $this->checkFileExists();
@@ -77,7 +77,7 @@ class Downloader
     /**
      * 检查目录是否存在，如不存在则创建
      */
-    public function checkDirectory()
+    public function checkDirectory():void
     {
         if(!is_dir($this->rootPath)){
             mkdir($this->rootPath, 0777, true);
@@ -87,11 +87,14 @@ class Downloader
     /**
      * 检查文件是否已存在
      */
-    public function checkFileExists()
+    public function checkFileExists():void
     {
         if($this->videosTitle){
             $filePath = $this->rootPath . $this->videosTitle . $this->fileExt;
             if(file_exists($filePath)){
+                if(is_file($this->ffmpFileListTxt)){
+                    unlink($this->ffmpFileListTxt);
+                }
                 echo "\033[0;32mThis folder already contains a file named\033[0m".PHP_EOL;
                 exit(0);
             }
@@ -104,17 +107,22 @@ class Downloader
      */
     public function setVideosTitle(string $videosTitle):self
     {
-        $this->videosTitle = str_replace([' ', '\\', '/'], '-',$videosTitle);
+        $this->videosTitle = str_replace([' ', '\\', '/'], '',$videosTitle);
 
         return $this;
     }
 
     /**
-     * @param string $videosTitle
+     * @param string $head
+     * @param string $titleName
      */
-    public function outputVideosTitle(string $videosTitle)
+    public function outputVideosTitle(string $head='Videos Title',string $titleName='')
     {
-        echo PHP_EOL . "Title：    \e[0;32m{$videosTitle}\e[0m". PHP_EOL;
+        if(empty($titleName)){
+            $titleName = $this->videosTitle;
+        }
+
+        echo PHP_EOL . "{$head}：    \e[0;32m{$titleName}\e[0m". PHP_EOL;
     }
 
     public function outputVideoQuality()
@@ -122,7 +130,10 @@ class Downloader
         echo PHP_EOL . "Video Quality：      \033[0;32m{$this->videoQuality}\033[0m   ". PHP_EOL . PHP_EOL;
     }
 
-    public static function randIp()
+    /**
+     * @return string
+     */
+    public static function randIp():string
     {
         return rand(50,250).".".rand(50,250).".".rand(50,250).".".rand(50,250);
     }
@@ -131,7 +142,7 @@ class Downloader
      * @param $fileName
      * @return array
      */
-    final static function defaultOptions($fileName)
+    final static function defaultOptions($fileName):array
     {
         $fp = fopen($fileName, 'w+');
         $ip = self::randIp();
@@ -188,10 +199,13 @@ class Downloader
      * @param string $path
      * @return $this
      */
-    public function writeFileLog(string $fileName, $path='./filelist.txt')
+    public function writeFileLog(string $fileName, $path='./'):self
     {
         $fileContents = "file ./Videos/{$fileName}".PHP_EOL;
-        file_put_contents($path, $fileContents,FILE_APPEND | LOCK_EX);
+        $file = $path . md5($this->requestUrl) . '-filelist.txt';
+
+        $this->ffmpFileListTxt = $file;
+        file_put_contents($file, $fileContents,FILE_APPEND | LOCK_EX);
 
         return $this;
     }
@@ -199,7 +213,7 @@ class Downloader
     /**
      * 删除临时下载文件
      */
-    public function deleteTempSaveFiles()
+    public function deleteTempSaveFiles():void
     {
         if(!empty($this->tempSaveFiles)){
             foreach($this->tempSaveFiles as $value){
@@ -216,8 +230,8 @@ class Downloader
     public function success(string $fileListText=null)
     {
         //清空文件内容
-        if($fileListText){
-            file_put_contents($fileListText, '', LOCK_EX);
+        if(is_file($fileListText)){
+            unlink($fileListText);
         }
 
         $tr = PHP_EOL;
