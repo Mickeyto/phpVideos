@@ -11,6 +11,7 @@ class FileCache
 {
     public $rootPath;
     public $flags;
+    public $fileDir = 'Html/';
 
     /**
      * FileCache constructor.
@@ -51,6 +52,53 @@ class FileCache
         file_put_contents($saveFilename, $data, $this->flags);
 
         return true;
+    }
+
+    /**
+     * @param string $dir
+     * @return FileCache
+     */
+    public function setFileDir(string $dir):self
+    {
+        $dir = ltrim($dir, '/');
+        $dir = ltrim($dir, '\\');
+        $this->fileDir = $dir;
+
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @param string $data
+     * @param string $suffix
+     * @return null|string
+     * @throws \ErrorException
+     */
+    public function setFile(string $key,string $data, string $suffix='.html'):?string
+    {
+        if(!is_string($key)){
+            throw new \ErrorException("Cache key name must be string");
+        }
+
+        if(empty($this->fileDir)){
+            throw new \ErrorException('fileDir must set');
+        }
+
+        $fileName = md5($key);
+
+        $this->rootPath = $this->rootPath . $this->fileDir;
+        $saveFilename = $this->rootPath . $fileName . $suffix;
+
+        $this->checkDirectory();
+
+        file_put_contents($saveFilename, $data, $this->flags);
+
+        return $saveFilename;
+    }
+
+    public function deleteFile()
+    {
+
     }
 
     /**

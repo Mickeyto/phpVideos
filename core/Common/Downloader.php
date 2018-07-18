@@ -181,7 +181,9 @@ class Downloader
      */
     final function progress($ch, $expectedDownloadByte, $currentDownloadByte, $expectedUploadFileSize, $currentUploadFileSize)
     {
+        $cuInfo = curl_getinfo($ch, CURLINFO_SPEED_DOWNLOAD);
         $this->cliProgressBar->progress($currentDownloadByte);
+        $this->cliProgressBar->setNetwork($cuInfo);
 
         if(empty($expectedDownloadByte)){
             $this->fileSize = self::DEFAULT_FILESIZE;
