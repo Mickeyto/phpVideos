@@ -19,7 +19,7 @@ class ArrayHelper
      * @param int $sort
      * @return array|bool
      */
-    public static function multisort(array $array, $sortKey, $sort=SORT_ASC)
+    public static function multisort(array $array, $sortKey,int $sort=SORT_ASC):?array
     {
         $tempArray = [];
         foreach($array as $value){
@@ -28,7 +28,7 @@ class ArrayHelper
             }
         }
         if(empty($tempArray)){
-            return false;
+            return null;
         }
 
         array_multisort($tempArray, $sort, $array);

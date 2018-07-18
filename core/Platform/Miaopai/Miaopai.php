@@ -7,32 +7,42 @@
  */
 namespace core\Platform\Miaopai;
 
+use core\Cache\FileCache;
 use core\Common\Downloader;
 use core\Common\FFmpeg;
 use core\Http\Curl;
 
 class Miaopai extends Downloader
 {
-    public $url = '';
-
-    public function __construct($url)
+    public function __construct(string $url)
     {
-        $this->url = $url;
+        $this->requestUrl = $url;
     }
 
     /**
      * @throws \ErrorException
      */
-    public function download()
+    public function download():void
     {
-        $res = Curl::get($this->url, $this->url);
+        $parseUrlPath = parse_url($this->requestUrl, PHP_URL_PATH);
+        $pathInfoExtension = pathinfo($parseUrlPath, PATHINFO_EXTENSION);
+
+        if($pathInfoExtension == 'mp4'){
+            $this->videosTitle = 'MP-' . md5($this->requestUrl);
+
+            $this->downloadFile($this->requestUrl, $this->videosTitle);
+            $this->success();
+            exit(0);
+        }
+
+        $res = Curl::get($this->requestUrl, $this->requestUrl);
 
         if($res){
             preg_match_all('/"videoSrc":"(.*?)",/i', $res[0], $matches);
             if(!isset($matches[1]) && !is_array($matches[1])){
-                $errors = sprintf("\033[0;31mm无法解析该地址\033[0m");
+                (new FileCache())->delete($this->requestUrl);
 
-                throw new \ErrorException($errors);
+                throw new \ErrorException('无法解析该地址');
             }
 
             $errors = libxml_use_internal_errors(true);
@@ -45,13 +55,16 @@ class Miaopai extends Downloader
             $element = $dom->documentElement;
             $titleItem = $element->getElementsByTagName('title');
 
+            if($titleItem->length < 1 || !isset($matches[1][0])){
+                (new FileCache())->delete($this->requestUrl);
+                throw new \ErrorException('无法解析该地址');
+            }
+
             $videosTitle = $titleItem->item(0)->textContent;
 
             $this->setVideosTitle($videosTitle);
 
             $videosUrl = $matches[1][0];
-            $fileExt = explode('?', $videosUrl)[0];
-            $fileExt = '.' . pathinfo($fileExt, PATHINFO_EXTENSION);
             $fileName = $this->videosTitle . '-0';
 
             $this->writeFileLog($fileName.$this->fileExt)->downloadFile($videosUrl, $fileName); //下载
