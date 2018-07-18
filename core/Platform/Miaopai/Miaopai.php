@@ -65,14 +65,20 @@ class Miaopai extends Downloader
             $this->setVideosTitle($videosTitle);
 
             $videosUrl = $matches[1][0];
-            $fileName = $this->videosTitle . '-0';
 
-            $this->writeFileLog($fileName.$this->fileExt)->downloadFile($videosUrl, $fileName); //下载
+            //https://kscdn.miaopai.com/stream/xBghjLxNWzMYqIcEH0D5FDmMttMmBejfSo-nRw__.mp4?ssig=e52e308ef953d7b90898f1aa044555af&time_stamp=1531901900853
 
-            FFmpeg::concatToMp4($this->videosTitle, './Videos/', $this->ffmpFileListTxt);
+            $gotoN = 1;
+            gotoVideosDownload:
+            $vi = $this->downloadFile($videosUrl, $this->videosTitle); //下载
 
-            $this->deleteTempSaveFiles();   //删除临时保存文件
-            $this->success($this->ffmpFileListTxt);
+            if($vi['fileSize'] == 1024 && $gotoN < 2){
+                $videosUrl = str_replace(['txycdn'], 'kscdn', $vi['info']['url']);
+                $gotoN++;
+                goto gotoVideosDownload;
+            }
+
+            $this->success();
 
             libxml_use_internal_errors($errors);
 
