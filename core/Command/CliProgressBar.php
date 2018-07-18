@@ -18,9 +18,10 @@ class CliProgressBar
 
     public $currentChar = '>';
     public $defaultChar = '=';
-    public $barLength = 50;
+    public $barLength = 40;
     public $step = 40;
     public $currentStep = 0;
+    public $network = 0;
 
     /**
      * CliProgressBar constructor.
@@ -69,6 +70,16 @@ class CliProgressBar
     public function getCurrentStep():int
     {
         return $this->currentStep;
+    }
+
+    /**
+     * @param int $value
+     * @return CliProgressBar
+     */
+    public function setNetwork(int $value):self
+    {
+        $this->network = $value;
+        return $this;
     }
 
     /**
@@ -163,9 +174,10 @@ class CliProgressBar
         $defaultFillChar = "\033[0;91m{$defaultFillChar}\033[0m";
         $currentStepFormat = $this->fileSizeToMb($currentStep);
         $stepFormat = $this->fileSizeToMb($step);
+        $networkFormat = $this->fileSizeToMb($this->network);
 
         $stepFillChar = str_repeat($this->currentChar, $currentStepLength);
-        $bar = sprintf('%s%s  %.1f%%（%s/%s）', $stepFillChar, $defaultFillChar, $proStepNumber, $currentStepFormat, $stepFormat);
+        $bar = sprintf('%s%s  %.1f%%（%s/%s）%s ', $stepFillChar, $defaultFillChar, $proStepNumber, $currentStepFormat, $stepFormat, $networkFormat);
 
         return sprintf("\r%s%s%s", $startColor, $bar, $endColor);
     }
