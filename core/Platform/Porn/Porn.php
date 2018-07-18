@@ -13,15 +13,16 @@ use core\Http\Curl;
 
 class Porn extends Downloader
 {
-    public function __construct($url)
+    public function __construct(string $url)
     {
         $this->requestUrl = $url;
     }
 
     /**
+     * @return array|bool|null
      * @throws \ErrorException
      */
-    public function getVideosUrl()
+    public function getVideosUrl():?array
     {
         $videosUrlCache = (new FileCache())->get($this->requestUrl);
         if($videosUrlCache){
@@ -69,7 +70,7 @@ class Porn extends Downloader
     /**
      * @throws \ErrorException
      */
-    public function download()
+    public function download():void
     {
         $videosUrl = $this->getVideosUrl();
 

@@ -12,7 +12,12 @@ class FileCache
     public $rootPath;
     public $flags;
 
-    public function __construct($directory='./Runtime/Cache/', $flags=LOCK_EX)
+    /**
+     * FileCache constructor.
+     * @param string $directory
+     * @param int $flags
+     */
+    public function __construct(string $directory='./Runtime/Cache/', int $flags=LOCK_EX)
     {
         $this->rootPath = $directory;
         $this->flags = $flags;
@@ -25,7 +30,7 @@ class FileCache
      * @return bool
      * @throws \ErrorException
      */
-    public function set($key, $value,int $expire=0)
+    public function set($key, $value,int $expire=0):bool
     {
         if(!is_string($key)){
             throw new \ErrorException("Cache key name must be string");
@@ -48,7 +53,12 @@ class FileCache
         return true;
     }
 
-    public function get($key, $default=null)
+    /**
+     * @param string $key
+     * @param null $default
+     * @return bool|null
+     */
+    public function get(string $key, $default=null):?bool
     {
         $fileName = md5($key);
         $saveFile = $this->rootPath . $fileName;
@@ -69,7 +79,11 @@ class FileCache
         return $data[0];
     }
 
-    public function delete($key)
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function delete(string $key):bool
     {
         $fileName = md5($key);
         $saveFile = $this->rootPath . $fileName;
@@ -77,7 +91,7 @@ class FileCache
         return unlink($saveFile);
     }
 
-    public function checkDirectory()
+    public function checkDirectory():void
     {
         if(!is_dir($this->rootPath)){
             mkdir($this->rootPath, 0777, true);
