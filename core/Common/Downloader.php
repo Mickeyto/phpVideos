@@ -71,7 +71,10 @@ class Downloader
         curl_close($ch);
 
         array_push($this->tempSaveFiles, $file);
-        return $curlInfo;
+        return [
+            'fileSize' => $this->fileSize,
+            'info' => $curlInfo,
+        ];
     }
 
     /**
@@ -95,8 +98,12 @@ class Downloader
                 if(is_file($this->ffmpFileListTxt)){
                     unlink($this->ffmpFileListTxt);
                 }
-                echo "\033[0;32mThis folder already contains a file named\033[0m".PHP_EOL;
-                exit(0);
+
+                $fileSize = filesize($filePath);
+                if($fileSize > 0){
+                    echo "\033[0;32mThis folder already contains a file named\033[0m".PHP_EOL;
+                    exit(0);
+                }
             }
         }
     }
@@ -150,11 +157,11 @@ class Downloader
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_AUTOREFERER => true,
             CURLOPT_HEADEROPT => [
                 "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                 "Accept-Encoding: gzip, deflate, br",
                 "Accept-Language: zh-CN,en-US;q=0.7,en;q=0.3",
-                "Host: v.youku.com",
                 "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
                 "HTTP_X_FORWARDED_FOR: {$ip}"
             ],
@@ -218,7 +225,7 @@ class Downloader
         if(!empty($this->tempSaveFiles)){
             foreach($this->tempSaveFiles as $value){
                 $tr = PHP_EOL;
-                printf("\033[0;34mUnlink file：{$value}\033[0m{$tr}");
+                printf("{$tr}\033[0;34mUnlink file：{$value}\033[0m{$tr}");
                 unlink($value);
             }
         }
@@ -235,7 +242,7 @@ class Downloader
         }
 
         $tr = PHP_EOL;
-        printf("\033[0;32mDownload Done\033[0m{$tr}");
+        printf("{$tr}\033[0;32mDownload Done\033[0m{$tr}");
     }
 
     public function __destruct()
