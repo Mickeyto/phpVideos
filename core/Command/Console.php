@@ -21,4 +21,9 @@ class Console
         return fwrite(STDOUT, $string);
     }
 
+    public static function select(string $question, array $options):?string
+    {
+        return '';
+    }
+
 }
