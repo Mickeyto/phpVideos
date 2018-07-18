@@ -20,7 +20,7 @@ class Curl
      * @return array|null
      * @throws \ErrorException
      */
-    public static function get(string $url,string $httpReferer, $options=[], $resCache=true, $ip=false):?array
+    public static function get(string $url,string $httpReferer,array $options=[],bool $resCache=true, $ip=false):?array
     {
         $cache = (new FileCache())->get($url);
 
