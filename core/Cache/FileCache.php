@@ -104,9 +104,9 @@ class FileCache
     /**
      * @param string $key
      * @param null $default
-     * @return bool|null
+     * @return array|null|string
      */
-    public function get(string $key, $default=null):?bool
+    public function get(string $key, $default=null)
     {
         $fileName = md5($key);
         $saveFile = $this->rootPath . $fileName;
