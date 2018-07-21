@@ -100,7 +100,9 @@ class Youku extends Downloader
 
             $videosInfo = ArrayHelper::multisort($json['data']['stream'], 'width', SORT_DESC);
 
+            $this->videoQuality = $videosInfo[0]['stream_type'];
             $this->outputVideosTitle();
+
             foreach($videosInfo[0]['segs'] as $key => $value){
                 $fileSize = $value['size'];
                 $fileName = $this->videosTitle . '-' . $key;
