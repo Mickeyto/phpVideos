@@ -259,6 +259,16 @@ class Downloader
         printf("{$tr}\033[0;32mDownload Done\033[0m{$tr}");
     }
 
+    /**
+     *
+     */
+    public function error():void
+    {
+        $errors = PHP_EOL ."\033[31mErrors：The video address resolution failed\033[0m".PHP_EOL;
+        echo $errors;
+        exit(0);
+    }
+
     public function __destruct()
     {
         unset($this->cliProgressBar);
