@@ -13,4 +13,4 @@ php 写的视频下载工具，现支持：Youku、Miaopai、腾讯、XVideos、
 #   使用
 php start 'link_address'
 
-![image](https://image.ibb.co/f9NVod/Jul_21_2018_21_19_23.gif)
+![image](https://image.ibb.co/mysKyd/Jul_21_2018_21_38_34.gif)
