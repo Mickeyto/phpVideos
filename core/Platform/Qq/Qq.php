@@ -123,12 +123,21 @@ class Qq extends Downloader
     {
         $exKeyId = explode('.', $keyId);
 
+//        var_dump($exKeyId);die;
+
         if($exKeyId[1] > 100000){
             $newKeyId = $exKeyId[0] . '.m' . substr($exKeyId[1], 3) . self::FILE_EXTENSION;
         } elseif($exKeyId[1] > 10000){
             $newKeyId = $exKeyId[0] . '.p' . substr($exKeyId[1], 2) . '.' . $exKeyId[2] . self::FILE_EXTENSION;
         } else {
-            $newKeyId = $keyId . self::FILE_EXTENSION;
+            switch ($exKeyId[1]){
+                case 2:
+                    $newKeyId = $exKeyId[0] . self::FILE_EXTENSION;
+                    break;
+                default:
+                    $newKeyId = $keyId . self::FILE_EXTENSION;
+                    break;
+            }
         }
 
         return $newKeyId;
@@ -169,7 +178,12 @@ class Qq extends Downloader
 
         $requestVideosUrl = $videosUrl . $fileKeyId . '?vkey='.$videosKey['key'];
 
-        $this->downloadFile($requestVideosUrl, $this->videosTitle);
+        $downInfo = $this->downloadFile($requestVideosUrl, $this->videosTitle);
+
+        if($downInfo['fileSize'] == 1024){
+            unlink($this->rootPath . $this->videosTitle . $this->fileExt);
+            $this->error();
+        }
 
         $this->success($this->ffmpFileListTxt);
 
