@@ -3,6 +3,10 @@ include_once "autoLoad.php";
 
 function checkVersion()
 {
+    if(!function_exists('curl_version')){
+        die("PHP version\e[31m must enabled curl extension\e[0m\n");
+    }
+
     $curlVersion = curl_version()['version'];
     $phpVersion = version_compare(PHP_VERSION, '7.1.3', '>=');
 
