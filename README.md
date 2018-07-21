@@ -4,7 +4,7 @@ php 写的视频下载工具，现支持：Youku、Miaopai、腾讯、XVideos、
 # 环境依赖
 *   PHP >= 7.1.3
 *   OpenSSL PHP Extension
-*   cUrl PHP Extension
+*   cURL PHP Extension
 *   FFmpeg：
     *   Mac：brew install ffmpeg
     *   Linux:  [Download](http://ffmpeg.org/download.html)
@@ -13,4 +13,4 @@ php 写的视频下载工具，现支持：Youku、Miaopai、腾讯、XVideos、
 #   使用
 php start 'link_address'
 
-![image](https://image.ibb.co/b926ZJ/Jul_16_2018_19_41_12.gif)
+![image](https://image.ibb.co/f9NVod/Jul_21_2018_21_19_23.gif)
