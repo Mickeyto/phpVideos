@@ -177,7 +177,7 @@ class CliProgressBar
         $networkFormat = $this->fileSizeToMb($this->network);
 
         $stepFillChar = str_repeat($this->currentChar, $currentStepLength);
-        $bar = sprintf('%s%s  %.1f%%（%s/%s）%s ', $stepFillChar, $defaultFillChar, $proStepNumber, $currentStepFormat, $stepFormat, $networkFormat);
+        $bar = sprintf('%s%s  %.1f%%（%s/%s）%s/s ', $stepFillChar, $defaultFillChar, $proStepNumber, $currentStepFormat, $stepFormat, $networkFormat);
 
         return sprintf("\r%s%s%s", $startColor, $bar, $endColor);
     }

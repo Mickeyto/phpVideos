@@ -9,6 +9,7 @@ namespace core\Common;
 
 
 use core\Command\CliProgressBar;
+use core\Command\Console;
 
 class Downloader
 {
@@ -46,7 +47,11 @@ class Downloader
         $this->outputVideosTitle('Download File', $fileName);
         $this->outputVideoQuality();
 
-        $this->checkFileExists();
+        $check = $this->checkFileExists();
+        if($check){
+            echo "\033[0;32mThis folder already contains a file named\033[0m".PHP_EOL;
+            exit(0);
+        }
 
         $this->cliProgressBar = new CliProgressBar();
         if(isset($fileOptions['fileSize'])){
@@ -88,24 +93,31 @@ class Downloader
     }
 
     /**
-     * 检查文件是否已存在
+     * @return bool|null
      */
-    public function checkFileExists():void
+    public function checkFileExists():?bool
     {
         if($this->videosTitle){
             $filePath = $this->rootPath . $this->videosTitle . $this->fileExt;
             if(file_exists($filePath)){
+
+                $stdin = Console::selected("\033[31m文件已存在，覆盖文件？\033[0m", ['y' => 'yes', 'n' => 'no']);
+                if($stdin == 'y'){
+                    return false;
+                }
+
                 if(is_file($this->ffmpFileListTxt)){
                     unlink($this->ffmpFileListTxt);
                 }
 
                 $fileSize = filesize($filePath);
                 if($fileSize > 0){
-                    echo "\033[0;32mThis folder already contains a file named\033[0m".PHP_EOL;
-                    exit(0);
+                    return true;
                 }
             }
         }
+
+        return null;
     }
 
     /**
