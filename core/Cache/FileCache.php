@@ -124,7 +124,7 @@ class FileCache
         $expireTime = $data[1] ?? null;
         $time = time();
         if(!empty($expireTime) && $expireTime < $time){
-            $this->delete($fileName);
+            $this->delete($key);
             return $default;
         }
 
