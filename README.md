@@ -9,8 +9,13 @@ php 写的视频下载工具，现支持：Youku、Miaopai、腾讯、XVideos、
     *   Mac：brew install ffmpeg
     *   Linux:  [Download](http://ffmpeg.org/download.html)
 *   cURL  >= 7.37.0
-    
-#   使用
+
+
+#   使用交流
+Discord地址（不使用天朝软件）：https://discord.gg/yuxfCy
+
+
+#   使用方法
 php start 'link_address'
 
 ![image](https://image.ibb.co/mysKyd/Jul_21_2018_21_38_34.gif)
