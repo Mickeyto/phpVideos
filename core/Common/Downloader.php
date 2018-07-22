@@ -260,11 +260,11 @@ class Downloader
     }
 
     /**
-     *
+     * @param string $contents
      */
-    public function error():void
+    public function error(string $contents='Errors：The video address resolution failed'):void
     {
-        $errors = PHP_EOL ."\033[31mErrors：The video address resolution failed\033[0m".PHP_EOL;
+        $errors = PHP_EOL ."\033[31m{$contents}\033[0m".PHP_EOL;
         echo $errors;
         exit(0);
     }

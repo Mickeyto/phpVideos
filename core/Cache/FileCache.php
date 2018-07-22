@@ -37,6 +37,10 @@ class FileCache
             throw new \ErrorException("Cache key name must be string");
         }
 
+        if(empty($value)){
+            return false;
+        }
+
         $expireTime = $expire;
         if($expire > 0){
             $expireTime = time() + $expire;
