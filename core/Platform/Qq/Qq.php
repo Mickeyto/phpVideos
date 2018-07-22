@@ -123,8 +123,6 @@ class Qq extends Downloader
     {
         $exKeyId = explode('.', $keyId);
 
-//        var_dump($exKeyId);die;
-
         if($exKeyId[1] > 100000){
             $newKeyId = $exKeyId[0] . '.m' . substr($exKeyId[1], 3) . self::FILE_EXTENSION;
         } elseif($exKeyId[1] > 10000){
