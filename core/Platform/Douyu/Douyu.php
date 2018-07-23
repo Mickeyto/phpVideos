@@ -10,6 +10,7 @@ namespace core\Platform\Douyu;
 use core\Cache\FileCache;
 use core\Common\Downloader;
 use core\Common\FFmpeg;
+use core\Common\M3u8;
 use core\Http\Curl;
 
 class Douyu extends Downloader
@@ -160,16 +161,18 @@ class Douyu extends Downloader
 
         $this->setVideosTitle($videosTitle);
 
-        preg_match_all('/\n[0-9a-zA-Z](.*?)[^\s]*/i', $contents, $matches);
+        $mUrls = M3u8::getUrls($contents);
+
+        if(!$mUrls){
+            $this->error('Errors：m3u8 urls empty');
+        }
 
         $urls = [];
-        if(isset($matches[0])){
-            $playerHost = str_replace('http', 'https', $playerHost);
-            foreach($matches[0] as $val){
-                $pa = trim($val);
-                $url =  $playerHost . '/' .$pa;
-                array_push($urls, $url);
-            }
+        $playerHost = str_replace('http', 'https', $playerHost);
+        foreach($mUrls as $val){
+            $pa = trim($val);
+            $url =  $playerHost . '/' .$pa;
+            array_push($urls, $url);
         }
 
         $this->outputVideosTitle();
