@@ -11,6 +11,7 @@ php 写的视频下载工具：
 |   91（不提供地址）   |   :white_check_mark:  |
 |   微博酷燃    | :white_check_mark: |
 |   斗鱼  |   :white_check_mark:  |
+|   爱奇艺  |   :white_check_mark:  |
 # 环境依赖
 *   PHP >= 7.1.3
 *   OpenSSL PHP Extension
