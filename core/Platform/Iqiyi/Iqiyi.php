@@ -8,6 +8,7 @@
 namespace core\Platform\Iqiyi;
 
 use core\Cache\FileCache;
+use core\Command\CliProgressBar;
 use core\Common\ArrayHelper;
 use core\Common\Downloader;
 use core\Common\FFmpeg;
@@ -171,8 +172,13 @@ class Iqiyi extends Downloader
         }
 
         $tsUrl = [];
+        $fileSize = 0;
         foreach($m3u8Urls as $row){
             $tempUrl = ltrim($row);
+
+            $fSize = get_headers($tempUrl, 1)['Content-Length'][1];
+            $fileSize += $fSize;
+
             array_push($tsUrl, $tempUrl);
         }
 

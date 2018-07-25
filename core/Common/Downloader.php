@@ -23,6 +23,10 @@ class Downloader
     public $videosTitle = '';
     public $requestUrl = '';
     public $videoQuality = '';
+    /**
+     * @var array
+     */
+    public $downloadUrls = [];
 
     /**
      * @var CliProgressBar
@@ -61,24 +65,26 @@ class Downloader
 
         $this->checkDirectory();
 
-        $file = $this->rootPath . $fileName . $this->fileExt;
-        $defaultOptions = self::defaultOptions($file);
-        if($options){
-            array_merge($defaultOptions, $options);
+        if(!empty($this->downloadUrls)){
+            foreach($this->downloadUrls as $uKey =>  $urlRow){
+                $fileName = $this->videosTitle . '-' . $uKey;
+                $file = $this->rootPath . $fileName . $this->fileExt;
+                $defaultOptions = self::defaultOptions($file);
+                if($options){
+                    array_merge($defaultOptions, $options);
+                }
+                $ch = curl_init($urlRow);
+                curl_setopt_array($ch, $defaultOptions);
+                curl_exec($ch);
+                curl_close($ch);
+            }
+
+            array_push($this->tempSaveFiles, $file);
         }
 
-        $ch = curl_init($url);
-        curl_setopt_array($ch, $defaultOptions);
-
-        curl_exec($ch);
-        $curlInfo = curl_getinfo($ch);
-
-        curl_close($ch);
-
-        array_push($this->tempSaveFiles, $file);
         return [
             'fileSize' => $this->fileSize,
-            'info' => $curlInfo,
+            'info' => [],
         ];
     }
 
