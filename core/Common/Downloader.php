@@ -23,6 +23,8 @@ class Downloader
     public $videosTitle = '';
     public $requestUrl = '';
     public $videoQuality = '';
+    public $currentSize = 8192;
+
     /**
      * @var array
      */
@@ -46,9 +48,9 @@ class Downloader
      * @param array $fileOptions
      * @return mixed
      */
-    public function downloadFile(string $url,string $fileName,array $options=[], $fileOptions=[])
+    public function downloadFile(string $url='',string $fileName='',array $options=[], $fileOptions=[])
     {
-        $this->outputVideosTitle('Download File', $fileName);
+//        $this->outputVideosTitle('Download File', $fileName);
         $this->outputVideoQuality();
 
         $check = $this->checkFileExists();
@@ -66,7 +68,21 @@ class Downloader
         $this->checkDirectory();
 
         if(!empty($this->downloadUrls)){
+            $fileSize = 0;
+            $fSize = [];
+            $this->cliProgressBar->setStep(count($this->downloadUrls));
             foreach($this->downloadUrls as $uKey =>  $urlRow){
+                $fSize = get_headers($urlRow, 1)['Content-Length'][1];
+                $fileSize += $fSize;
+                $fSize[$uKey] = $fSize;
+                $this->fileSize = $fileSize;
+                $this->cliProgressBar->progress($uKey+1);
+            }
+
+            $this->cliProgressBar->setStep($fileSize);
+
+            foreach($this->downloadUrls as $uKey => $urlRow){
+                $this->fileSize = $fSize[$uKey];
                 $fileName = $this->videosTitle . '-' . $uKey;
                 $file = $this->rootPath . $fileName . $this->fileExt;
                 $defaultOptions = self::defaultOptions($file);
@@ -77,10 +93,13 @@ class Downloader
                 curl_setopt_array($ch, $defaultOptions);
                 curl_exec($ch);
                 curl_close($ch);
+
+                array_push($this->tempSaveFiles, $file);
             }
 
-            array_push($this->tempSaveFiles, $file);
         }
+
+        echo PHP_EOL . 'test' . PHP_EOL;
 
         return [
             'fileSize' => $this->fileSize,
@@ -165,13 +184,15 @@ class Downloader
 
     /**
      * @param $fileName
+     * @param bool $noProgress
      * @return array
      */
-    final static function defaultOptions($fileName):array
+    final static function defaultOptions($fileName, $noProgress=false):array
     {
         $fp = fopen($fileName, 'w+');
         $ip = self::randIp();
-        return [
+
+        $curlOption = [
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
@@ -183,10 +204,17 @@ class Downloader
                 "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
                 "HTTP_X_FORWARDED_FOR: {$ip}"
             ],
-            CURLOPT_NOPROGRESS => false,
-            CURLOPT_PROGRESSFUNCTION => [self::class, 'progress'],
             CURLOPT_FILE => $fp,
         ];
+
+        if(!$noProgress){
+            $curlOption += [
+                CURLOPT_NOPROGRESS => false,
+                CURLOPT_PROGRESSFUNCTION => [self::class, 'progress'],
+            ];
+        }
+
+        return $curlOption;
     }
 
     /**
@@ -200,21 +228,20 @@ class Downloader
     final function progress($ch, $expectedDownloadByte, $currentDownloadByte, $expectedUploadFileSize, $currentUploadFileSize)
     {
         $cuInfo = curl_getinfo($ch, CURLINFO_SPEED_DOWNLOAD);
-        $this->cliProgressBar->progress($currentDownloadByte);
+
+        $this->cliProgressBar->progress($this->currentSize);
         $this->cliProgressBar->setNetwork($cuInfo);
 
         if(empty($expectedDownloadByte)){
             $this->fileSize = self::DEFAULT_FILESIZE;
-            $this->cliProgressBar->setStep($this->fileSize);
         }
 
         if($this->fileSize < $expectedDownloadByte && $expectedDownloadByte > 0){
+            $this->currentSize += $expectedDownloadByte;
             $this->fileSize = $expectedDownloadByte;
-            $this->cliProgressBar->setStep($this->fileSize);
         }
 
         if($this->fileSize === $currentDownloadByte){
-            $this->cliProgressBar->end();
             return 1;
         }
 

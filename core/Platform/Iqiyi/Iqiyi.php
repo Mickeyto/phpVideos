@@ -150,7 +150,7 @@ class Iqiyi extends Downloader
         $videoInfo = $this->getVideosInfo();
         $tmtsInfo = $this->getTmts($videoInfo['tvid'], $videoInfo['vid']);
         if($tmtsInfo['code'] != 'A00000'){
-            $this->error('Errors：get mus error');
+            $this->error('Errors：get mus error -》'.$tmtsInfo['code']);
         }
 
         $vidl = ArrayHelper::multisort($tmtsInfo['data']['vidl'], 'screenSize', SORT_ASC);
@@ -172,30 +172,22 @@ class Iqiyi extends Downloader
         }
 
         $tsUrl = [];
-        $fileSize = 0;
         foreach($m3u8Urls as $row){
             $tempUrl = ltrim($row);
-
-            $fSize = get_headers($tempUrl, 1)['Content-Length'][1];
-            $fileSize += $fSize;
-
             array_push($tsUrl, $tempUrl);
         }
 
+        $this->downloadUrls = $tsUrl;
         $this->setVideosTitle($videoInfo['title']);
         $this->outputVideosTitle();
         $this->videoQuality = $this->getQu($vidl[0]['vd']);
 
         $fileZ = [];
         $this->fileExt = '.ts';
-        foreach ($tsUrl as $key => $row){
-            $fileName = $this->videosTitle . '-' . $key;
-            $fileInfo = $this->writeFileLog($fileName.$this->fileExt)->downloadFile($row, $fileName);
 
-            if($fileInfo['fileSize'] == 0){
-                array_push($fileZ, $fileName.$this->fileExt);
-            }
-        }
+        $this->downloadFile();
+
+        die;
 
         if(count($fileZ) > 0){
             printf("\n\e[41m%s\033[0m\n", 'Errors：download file 0');

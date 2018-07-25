@@ -35,6 +35,12 @@ if($domain){
 
     $className = "\core\Platform\\$domain\\" . $domain;
 
+    $classFile = __DIR__ . str_replace('\\', DIRECTORY_SEPARATOR, $className);
+    if(!file_exists($classFile.'.php')){
+        echo("\033[31m  No such file or directory \033[0m".PHP_EOL);
+        exit(0);
+    }
+
     $class = new $className($url);
     $class->download();
 }
