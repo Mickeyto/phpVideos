@@ -101,23 +101,33 @@ class Youku extends Downloader
             $videosInfo = ArrayHelper::multisort($json['data']['stream'], 'width', SORT_DESC);
 
             $this->videoQuality = $videosInfo[0]['stream_type'];
-            $this->outputVideosTitle();
 
+            $fileTotalSize = 0;
+            $fileSizeArr = [];
             foreach($videosInfo[0]['segs'] as $key => $value){
-                $fileSize = $value['size'];
-                $fileName = $this->videosTitle . '-' . $key;
+                $fileTotalSize += $value['size'];
 
-                $fileOptions = [
-                    'fileSize' => $fileSize,
-                ];
-
-                $this->writeFileLog($fileName.$this->fileExt)->downloadFile($value['cdn_url'], $fileName, [], $fileOptions);
-
+                $fileSizeArr[$key] = $value['size'];
+                $this->downloadUrls[$key] = $value['cdn_url'];
             }
 
-            FFmpeg::concatToMp4($this->videosTitle, $this->ffmpFileListTxt, './Videos/');
+            $fileSizeArray = [
+                'totalSize' => $fileTotalSize,
+                'list' => $fileSizeArr,
+            ];
 
-            $this->deleteTempSaveFiles();
+            $this->outputVideosTitle();
+            $downloadFileInfo = $this->downloadFile($fileSizeArray);
+
+            if($downloadFileInfo < 1024){
+                printf("\n\e[41m%s\033[0m\n", 'Errors：download file 0');
+            } else {
+                if(count($this->downloadUrls) > 1){
+                    FFmpeg::concatToMp4($this->videosTitle, $this->ffmpFileListTxt, './Videos/');
+                    $this->deleteTempSaveFiles();
+                }
+            }
+
             $this->success($this->ffmpFileListTxt);
 
         } else {

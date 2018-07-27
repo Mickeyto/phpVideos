@@ -85,10 +85,11 @@ class Krcom extends Downloader
         $tempArray = ArrayHelper::multisort($tempArray, 'plate', SORT_DESC);
         $this->setVideosTitle($videosTitle);
         $this->videoQuality = $tempArray[0]['plate'];
+        $this->downloadUrls[0] = $tempArray[0]['url'];
 
-        $this->downloadFile($tempArray[0]['url'], $this->videosTitle);
-
-        $this->success();
+        $this->outputVideosTitle();
+        $this->downloadFile();
+        $this->success($this->ffmpFileListTxt);
 
         unlink($htmlFile);
 

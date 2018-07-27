@@ -30,8 +30,11 @@ class Miaopai extends Downloader
         if($pathInfoExtension == 'mp4'){
             $this->videosTitle = 'MP-' . md5($this->requestUrl);
 
-            $this->downloadFile($this->requestUrl, $this->videosTitle);
-            $this->success();
+            $this->downloadUrls[0] = $this->requestUrl;
+
+            $this->outputVideosTitle();
+            $this->downloadFile();
+            $this->success($this->ffmpFileListTxt);
             exit(0);
         }
 
@@ -68,9 +71,11 @@ class Miaopai extends Downloader
 
             //https://kscdn.miaopai.com/stream/xBghjLxNWzMYqIcEH0D5FDmMttMmBejfSo-nRw__.mp4?ssig=e52e308ef953d7b90898f1aa044555af&time_stamp=1531901900853
 
+            $this->outputVideosTitle();
             $gotoN = 1;
             gotoVideosDownload:
-            $vi = $this->downloadFile($videosUrl, $this->videosTitle); //下载
+            $this->downloadUrls[0] = $videosUrl;
+            $vi = $this->downloadFile(); //下载
 
             if($vi['fileSize'] == 1024 && $gotoN < 2){
                 $videosUrl = str_replace(['txycdn'], 'kscdn', $vi['info']['url']);
@@ -78,7 +83,7 @@ class Miaopai extends Downloader
                 goto gotoVideosDownload;
             }
 
-            $this->success();
+            $this->success($this->ffmpFileListTxt);
 
             libxml_use_internal_errors($errors);
 

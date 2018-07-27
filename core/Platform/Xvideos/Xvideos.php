@@ -50,7 +50,8 @@ class Xvideos extends Downloader
                         'type' => 'mp4_low',
                     ];
                 } else {
-                    throw new \ErrorException('未找到视频地址');
+
+                    $this->error('未找到视频地址：'.$jsonUrl);
                 }
             }
 
@@ -74,8 +75,10 @@ class Xvideos extends Downloader
         $videosInfo = $this->getVideosInfo($videoId);
 
         $this->videoQuality = $videosInfo['type'];
-        $this->downloadFile($videosInfo['url'], $this->videosTitle);
-        $this->success();
+        $this->downloadUrls[0] = $videosInfo['url'];
+        $this->outputVideosTitle();
+        $this->downloadFile();
+        $this->success($this->ffmpFileListTxt);
     }
 
 }

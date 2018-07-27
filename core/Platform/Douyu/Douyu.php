@@ -175,19 +175,11 @@ class Douyu extends Downloader
             array_push($urls, $url);
         }
 
+        $this->downloadUrls = $urls;
+
         $this->outputVideosTitle();
-
-        $fileZ = [];
-        foreach ($urls as $key => $row){
-            $fileName = $this->videosTitle . '-' . $key;
-            $fileInfo = $this->writeFileLog($fileName.$this->fileExt)->downloadFile($row, $fileName);
-
-            if($fileInfo['fileSize'] == 0){
-                array_push($fileZ, $fileName.$this->fileExt);
-            }
-        }
-
-        if(count($fileZ) > 0){
+        $downloadFileInfo = $this->downloadFile();
+        if($downloadFileInfo < 1024){
             printf("\n\e[41m%s\033[0m\n", 'Errors：download file 0');
         } else {
             FFmpeg::concatToMp4($this->videosTitle, $this->ffmpFileListTxt, './Videos/');
