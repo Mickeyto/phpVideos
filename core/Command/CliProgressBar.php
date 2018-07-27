@@ -83,6 +83,15 @@ class CliProgressBar
     }
 
     /**
+     * @return int
+     */
+    public function getNetwork():int
+    {
+        $network = $this->network < 1 ? 1024*8 : $this->network;
+        return $network;
+    }
+
+    /**
      * @param int $currentStep
      * @param bool $initStep
      * @return $this
@@ -174,7 +183,7 @@ class CliProgressBar
         $defaultFillChar = "\033[0;91m{$defaultFillChar}\033[0m";
         $currentStepFormat = $this->fileSizeToMb($currentStep);
         $stepFormat = $this->fileSizeToMb($step);
-        $networkFormat = $this->fileSizeToMb($this->network);
+        $networkFormat = $this->fileSizeToMb($this->getNetwork());
 
         $stepFillChar = str_repeat($this->currentChar, $currentStepLength);
         $bar = sprintf('%s%s  %.1f%%（%s/%s）%s/s ', $stepFillChar, $defaultFillChar, $proStepNumber, $currentStepFormat, $stepFormat, $networkFormat);
@@ -213,7 +222,7 @@ class CliProgressBar
     public function fileSizeToMb(int $size, int $powValue=2):string
     {
         $sizeToMb = $size / pow(1024, $powValue);
-
+        $sizeToMb = $sizeToMb > 0 ? $sizeToMb : '0.01';
         return round($sizeToMb, 2) . 'Mb';
     }
 

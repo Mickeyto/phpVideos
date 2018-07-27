@@ -176,9 +176,12 @@ class Qq extends Downloader
 
         $requestVideosUrl = $videosUrl . $fileKeyId . '?vkey='.$videosKey['key'];
 
-        $downInfo = $this->downloadFile($requestVideosUrl, $this->videosTitle);
+        $this->downloadUrls[0] = $requestVideosUrl;
 
-        if($downInfo['fileSize'] == 1024){
+        $this->outputVideosTitle();
+        $downInfo = $this->downloadFile();
+
+        if($downInfo['fileSize'] < 1024){
             unlink($this->rootPath . $this->videosTitle . $this->fileExt);
             $this->error();
         }

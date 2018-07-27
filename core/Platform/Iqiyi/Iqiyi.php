@@ -8,6 +8,7 @@
 namespace core\Platform\Iqiyi;
 
 use core\Cache\FileCache;
+use core\Command\CliProgressBar;
 use core\Common\ArrayHelper;
 use core\Common\Downloader;
 use core\Common\FFmpeg;
@@ -80,7 +81,7 @@ class Iqiyi extends Downloader
 
             $videoInfo = ltrim($tmtsInfo[0], 'var tvInfoJs=');
             $tmtsCache = json_decode($videoInfo, true);
-            (new FileCache())->set($tvid, $tmtsCache, 120);
+            (new FileCache())->set($tvid, $tmtsCache, 60);
         }
 
         return $tmtsCache;
@@ -149,14 +150,14 @@ class Iqiyi extends Downloader
         $videoInfo = $this->getVideosInfo();
         $tmtsInfo = $this->getTmts($videoInfo['tvid'], $videoInfo['vid']);
         if($tmtsInfo['code'] != 'A00000'){
-            $this->error('Errors：get mus error');
+            $this->error('Errors：get mus error -》'.$tmtsInfo['code']);
         }
 
         $vidl = ArrayHelper::multisort($tmtsInfo['data']['vidl'], 'screenSize', SORT_ASC);
 
         $m3utxCache = (new FileCache())->get($videoInfo['tvid'].'m3utx');
         if(!$m3utxCache){
-            $m3utx = Curl::get($vidl[0]['m3utx'], $this->requestUrl);
+            $m3utx = Curl::get($vidl[0]['m3u'], $this->requestUrl);
             if(!$m3utx){
                 $this->error('Errors：get m3utx error');
             }
@@ -176,22 +177,15 @@ class Iqiyi extends Downloader
             array_push($tsUrl, $tempUrl);
         }
 
+        $this->downloadUrls = $tsUrl;
         $this->setVideosTitle($videoInfo['title']);
         $this->outputVideosTitle();
         $this->videoQuality = $this->getQu($vidl[0]['vd']);
 
-        $fileZ = [];
         $this->fileExt = '.ts';
-        foreach ($tsUrl as $key => $row){
-            $fileName = $this->videosTitle . '-' . $key;
-            $fileInfo = $this->writeFileLog($fileName.$this->fileExt)->downloadFile($row, $fileName);
+        $downloadFileInfo = $this->downloadFile();
 
-            if($fileInfo['fileSize'] == 0){
-                array_push($fileZ, $fileName.$this->fileExt);
-            }
-        }
-
-        if(count($fileZ) > 0){
+        if($downloadFileInfo < 1024){
             printf("\n\e[41m%s\033[0m\n", 'Errors：download file 0');
         } else {
             FFmpeg::concatToMp4($this->videosTitle, $this->ffmpFileListTxt, './Videos/');

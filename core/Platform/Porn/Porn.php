@@ -75,9 +75,11 @@ class Porn extends Downloader
         $videosUrl = $this->getVideosUrl();
 
         $this->videosTitle = $videosUrl['title'];
+        $this->downloadUrls[0] = $videosUrl['url'];
 
-        $this->downloadFile($videosUrl['url'], $this->videosTitle);
-        $this->success();
+        $this->outputVideosTitle();
+        $this->downloadFile();
+        $this->success($this->ffmpFileListTxt);
     }
 
 }
