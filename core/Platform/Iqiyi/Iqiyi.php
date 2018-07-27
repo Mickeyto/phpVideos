@@ -81,7 +81,7 @@ class Iqiyi extends Downloader
 
             $videoInfo = ltrim($tmtsInfo[0], 'var tvInfoJs=');
             $tmtsCache = json_decode($videoInfo, true);
-            (new FileCache())->set($tvid, $tmtsCache, 120);
+            (new FileCache())->set($tvid, $tmtsCache, 60);
         }
 
         return $tmtsCache;
@@ -157,7 +157,7 @@ class Iqiyi extends Downloader
 
         $m3utxCache = (new FileCache())->get($videoInfo['tvid'].'m3utx');
         if(!$m3utxCache){
-            $m3utx = Curl::get($vidl[0]['m3utx'], $this->requestUrl);
+            $m3utx = Curl::get($vidl[0]['m3u'], $this->requestUrl);
             if(!$m3utx){
                 $this->error('Errors：get m3utx error');
             }
@@ -182,14 +182,10 @@ class Iqiyi extends Downloader
         $this->outputVideosTitle();
         $this->videoQuality = $this->getQu($vidl[0]['vd']);
 
-        $fileZ = [];
         $this->fileExt = '.ts';
+        $downloadFileInfo = $this->downloadFile();
 
-        $this->downloadFile();
-
-        die;
-
-        if(count($fileZ) > 0){
+        if($downloadFileInfo < 1024){
             printf("\n\e[41m%s\033[0m\n", 'Errors：download file 0');
         } else {
             FFmpeg::concatToMp4($this->videosTitle, $this->ffmpFileListTxt, './Videos/');

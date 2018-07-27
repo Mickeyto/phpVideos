@@ -10,6 +10,7 @@ namespace core\Common;
 
 use core\Command\CliProgressBar;
 use core\Command\Console;
+use function Sodium\library_version_major;
 
 class Downloader
 {
@@ -23,7 +24,7 @@ class Downloader
     public $videosTitle = '';
     public $requestUrl = '';
     public $videoQuality = '';
-    public $currentSize = 8192;
+    public $currentSize = 1;
 
     /**
      * @var array
@@ -42,15 +43,13 @@ class Downloader
     }
 
     /**
-     * @param string $url
-     * @param string $fileName
+     * @param array $fileSizeArray = ['totalSize' => 0, 'list' => []]
      * @param array $options
      * @param array $fileOptions
      * @return mixed
      */
-    public function downloadFile(string $url='',string $fileName='',array $options=[], $fileOptions=[])
+    public function downloadFile(array $fileSizeArray=[], array $options=[], $fileOptions=[])
     {
-//        $this->outputVideosTitle('Download File', $fileName);
         $this->outputVideoQuality();
 
         $check = $this->checkFileExists();
@@ -67,42 +66,69 @@ class Downloader
 
         $this->checkDirectory();
 
+        $fileSize = 0;
         if(!empty($this->downloadUrls)){
-            $fileSize = 0;
             $fSize = [];
-            $this->cliProgressBar->setStep(count($this->downloadUrls));
-            foreach($this->downloadUrls as $uKey =>  $urlRow){
-                $fSize = get_headers($urlRow, 1)['Content-Length'][1];
-                $fileSize += $fSize;
-                $fSize[$uKey] = $fSize;
+
+            //file size
+            if(!isset($fileSizeArray['totalSize'])){
+                $this->cliProgressBar->setStep(count($this->downloadUrls));
+                foreach($this->downloadUrls as $uKey =>  $urlRow){
+                    $contentLength = get_headers($urlRow, 1)['Content-Length'];
+                    if(is_array($contentLength) && count($contentLength) > 1){
+                        $contentLength = $contentLength[1];
+                    }
+                    $fileSize += $contentLength;
+                    $fSize[$uKey] = $contentLength;
+                    $this->fileSize = $fileSize;
+                    $this->cliProgressBar->progress($uKey+1);
+                }
+            } else {
+                $fileSize = $fileSizeArray['totalSize'];
+                $fSize = $fileSizeArray['list'];
                 $this->fileSize = $fileSize;
-                $this->cliProgressBar->progress($uKey+1);
             }
 
+            if(empty($fileSize)){
+                $fileSize = self::DEFAULT_FILESIZE;
+            }
+
+            //download file
             $this->cliProgressBar->setStep($fileSize);
+            $urlCount = count($this->downloadUrls);
 
             foreach($this->downloadUrls as $uKey => $urlRow){
                 $this->fileSize = $fSize[$uKey];
-                $fileName = $this->videosTitle . '-' . $uKey;
+
+                switch ($urlCount){
+                    case 1:
+                        $fileName = $this->videosTitle;
+                        break;
+                    default:
+                        $fileName = $this->videosTitle . '-' . $uKey;
+                        break;
+                }
+
                 $file = $this->rootPath . $fileName . $this->fileExt;
                 $defaultOptions = self::defaultOptions($file);
                 if($options){
                     array_merge($defaultOptions, $options);
                 }
+
                 $ch = curl_init($urlRow);
                 curl_setopt_array($ch, $defaultOptions);
                 curl_exec($ch);
                 curl_close($ch);
 
+                $this->writeFileLog($fileName.$this->fileExt);
                 array_push($this->tempSaveFiles, $file);
             }
 
+            $this->cliProgressBar->end();
         }
 
-        echo PHP_EOL . 'test' . PHP_EOL;
-
         return [
-            'fileSize' => $this->fileSize,
+            'fileSize' => $fileSize,
             'info' => [],
         ];
     }
@@ -151,7 +177,7 @@ class Downloader
      */
     public function setVideosTitle(string $videosTitle):self
     {
-        $this->videosTitle = str_replace([' ', '\\', '/'], '',$videosTitle);
+        $this->videosTitle = str_replace([' ', '\\', '/', '\''], '',$videosTitle);
 
         return $this;
     }
@@ -229,7 +255,8 @@ class Downloader
     {
         $cuInfo = curl_getinfo($ch, CURLINFO_SPEED_DOWNLOAD);
 
-        $this->cliProgressBar->progress($this->currentSize);
+        $cuDo = $this->currentSize + $currentDownloadByte;
+        $this->cliProgressBar->progress($cuDo);
         $this->cliProgressBar->setNetwork($cuInfo);
 
         if(empty($expectedDownloadByte)){
@@ -237,11 +264,14 @@ class Downloader
         }
 
         if($this->fileSize < $expectedDownloadByte && $expectedDownloadByte > 0){
-            $this->currentSize += $expectedDownloadByte;
+            if($this->cliProgressBar->getStep() == self::DEFAULT_FILESIZE){
+                $this->cliProgressBar->setStep($expectedDownloadByte);
+            }
             $this->fileSize = $expectedDownloadByte;
         }
 
         if($this->fileSize === $currentDownloadByte){
+            $this->currentSize += $currentDownloadByte;
             return 1;
         }
 

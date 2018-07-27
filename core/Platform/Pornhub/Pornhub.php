@@ -99,7 +99,10 @@ class Pornhub extends Downloader
         $videosList = ArrayHelper::multisort($videosList, 'quality', SORT_DESC);
 
         $this->videoQuality = $videosList[0]['quality'];
-        $this->downloadFile($videosList[0]['videoUrl'], $this->videosTitle);
-        $this->success();
+        $this->downloadUrls[0] = $videosList[0]['videoUrl'];
+
+        $this->outputVideosTitle();
+        $this->downloadFile();
+        $this->success($this->ffmpFileListTxt);
     }
 }

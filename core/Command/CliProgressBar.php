@@ -222,7 +222,7 @@ class CliProgressBar
     public function fileSizeToMb(int $size, int $powValue=2):string
     {
         $sizeToMb = $size / pow(1024, $powValue);
-
+        $sizeToMb = $sizeToMb > 0 ? $sizeToMb : '0.01';
         return round($sizeToMb, 2) . 'Mb';
     }
 
