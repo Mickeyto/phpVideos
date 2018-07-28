@@ -9,6 +9,7 @@ namespace core\Platform\Porn;
 
 use core\Cache\FileCache;
 use core\Common\Downloader;
+use core\Config\Config;
 use core\Http\Curl;
 
 class Porn extends Downloader
@@ -19,17 +20,18 @@ class Porn extends Downloader
     }
 
     /**
+     * @param array $curlProxy
      * @return array|bool|null
      * @throws \ErrorException
      */
-    public function getVideosUrl():?array
+    public function getVideosUrl(array $curlProxy=[]):?array
     {
         $videosUrlCache = (new FileCache())->get($this->requestUrl);
         if($videosUrlCache){
             return $videosUrlCache;
         }
 
-        $html = Curl::get($this->requestUrl, $this->requestUrl, [], false);
+        $html = Curl::get($this->requestUrl, $this->requestUrl, $curlProxy, false);
 
         if(!$html || empty($html[0])){
             throw new \ErrorException('该地址解析失败');
@@ -72,13 +74,20 @@ class Porn extends Downloader
      */
     public function download():void
     {
-        $videosUrl = $this->getVideosUrl();
+        $httpProxy = Config::instance()->get('http_proxy');
+        $curlProxy = [];
+        if($httpProxy){
+            $curlProxy = [
+                CURLOPT_PROXY => $httpProxy,
+            ];
+        }
+
+        $videosUrl = $this->getVideosUrl($curlProxy);
 
         $this->videosTitle = $videosUrl['title'];
         $this->downloadUrls[0] = $videosUrl['url'];
 
-        $this->outputVideosTitle();
-        $this->downloadFile();
+        $this->downloadFile([], $curlProxy);
         $this->success($this->ffmpFileListTxt);
     }
 

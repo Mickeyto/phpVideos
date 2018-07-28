@@ -50,6 +50,7 @@ class Downloader
      */
     public function downloadFile(array $fileSizeArray=[], array $options=[], $fileOptions=[])
     {
+        $this->outputVideosTitle();
         $this->outputVideoQuality();
 
         $check = $this->checkFileExists();
@@ -112,7 +113,7 @@ class Downloader
                 $file = $this->rootPath . $fileName . $this->fileExt;
                 $defaultOptions = self::defaultOptions($file);
                 if($options){
-                    array_merge($defaultOptions, $options);
+                    $defaultOptions += $options;
                 }
 
                 $ch = curl_init($urlRow);

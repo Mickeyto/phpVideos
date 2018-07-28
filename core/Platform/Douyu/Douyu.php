@@ -177,7 +177,6 @@ class Douyu extends Downloader
 
         $this->downloadUrls = $urls;
 
-        $this->outputVideosTitle();
         $downloadFileInfo = $this->downloadFile();
         if($downloadFileInfo < 1024){
             printf("\n\e[41m%s\033[0m\n", 'Errors：download file 0');

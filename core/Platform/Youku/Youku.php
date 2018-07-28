@@ -116,7 +116,6 @@ class Youku extends Downloader
                 'list' => $fileSizeArr,
             ];
 
-            $this->outputVideosTitle();
             $downloadFileInfo = $this->downloadFile($fileSizeArray);
 
             if($downloadFileInfo < 1024){

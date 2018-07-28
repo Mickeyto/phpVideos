@@ -178,7 +178,6 @@ class Qq extends Downloader
 
         $this->downloadUrls[0] = $requestVideosUrl;
 
-        $this->outputVideosTitle();
         $downInfo = $this->downloadFile();
 
         if($downInfo['fileSize'] < 1024){

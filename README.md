@@ -24,7 +24,16 @@ php 写的视频下载工具：
 #   使用交流
 Discord地址（不使用天朝软件）：https://discord.gg/yuxfCy
 
+#   代理配置
+*  config.php
 
+    <pre>
+    return [
+        //http 代理配置
+        'http_proxy' => 'http://127.0.0.1:1087',
+    ];
+    </pre>
+    
 #   使用方法
 php start 'link_address'
 
