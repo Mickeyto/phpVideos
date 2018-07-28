@@ -9,6 +9,7 @@ namespace core\Platform\Xvideos;
 
 use core\Cache\FileCache;
 use core\Common\Downloader;
+use core\Config\Config;
 use core\Http\Curl;
 
 class Xvideos extends Downloader
@@ -24,16 +25,17 @@ class Xvideos extends Downloader
 
     /**
      * @param $videoId
+     * @param array $curlProxy
      * @return array|bool|null
      * @throws \ErrorException
      */
-    public function getVideosInfo(string $videoId):?array
+    public function getVideosInfo(string $videoId, array $curlProxy=[]):?array
     {
         $jsonUrl = 'https://www.xvideos.com/html5player/getvideo/'. $videoId .'/2';
 
         $urlCache = (new FileCache())->get($jsonUrl);
         if(!$urlCache){
-            $getJson = Curl::get($jsonUrl, $jsonUrl);
+            $getJson = Curl::get($jsonUrl, $jsonUrl, $curlProxy);
             if($getJson){
                 $json = json_decode($getJson[0], true);
                 if(false === $json['exist']){
@@ -50,7 +52,6 @@ class Xvideos extends Downloader
                         'type' => 'mp4_low',
                     ];
                 } else {
-
                     $this->error('未找到视频地址：'.$jsonUrl);
                 }
             }
@@ -71,13 +72,21 @@ class Xvideos extends Downloader
 
         $videoId = substr($urlInfo[1], 5);
 
+        $httpProxy = Config::instance()->get('http_proxy');
+        $curlProxy = [];
+        if($httpProxy){
+            $curlProxy = [
+                CURLOPT_PROXY => $httpProxy,
+            ];
+        }
+
         $this->videosTitle = $urlInfo[2];
-        $videosInfo = $this->getVideosInfo($videoId);
+        $videosInfo = $this->getVideosInfo($videoId, $curlProxy);
 
         $this->videoQuality = $videosInfo['type'];
         $this->downloadUrls[0] = $videosInfo['url'];
-        $this->outputVideosTitle();
-        $this->downloadFile();
+
+        $this->downloadFile([], $curlProxy);
         $this->success($this->ffmpFileListTxt);
     }
 

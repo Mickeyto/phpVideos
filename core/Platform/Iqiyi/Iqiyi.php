@@ -179,7 +179,7 @@ class Iqiyi extends Downloader
 
         $this->downloadUrls = $tsUrl;
         $this->setVideosTitle($videoInfo['title']);
-        $this->outputVideosTitle();
+
         $this->videoQuality = $this->getQu($vidl[0]['vd']);
 
         $this->fileExt = '.ts';

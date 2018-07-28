@@ -10,6 +10,7 @@ namespace core\Platform\Pornhub;
 use core\Cache\FileCache;
 use core\Common\ArrayHelper;
 use core\Common\Downloader;
+use core\Config\Config;
 use core\Http\Curl;
 
 class Pornhub extends Downloader
@@ -88,6 +89,14 @@ class Pornhub extends Downloader
      */
     public function download():void
     {
+        $httpProxy = Config::instance()->get('http_proxy');
+        $curlProxy = [];
+        if($httpProxy){
+            $curlProxy = [
+                CURLOPT_PROXY => $httpProxy,
+            ];
+        }
+
         $videosJson = $this->getVideosJson();
         $videosList = $this->getVideosList($videosJson);
 
@@ -101,8 +110,12 @@ class Pornhub extends Downloader
         $this->videoQuality = $videosList[0]['quality'];
         $this->downloadUrls[0] = $videosList[0]['videoUrl'];
 
-        $this->outputVideosTitle();
-        $this->downloadFile();
+        $fileSizeArray = [
+            'totalSize' => self::DEFAULT_FILESIZE,
+            'list' => [self::DEFAULT_FILESIZE],
+        ];
+
+        $this->downloadFile($fileSizeArray, $curlProxy);
         $this->success($this->ffmpFileListTxt);
     }
 }

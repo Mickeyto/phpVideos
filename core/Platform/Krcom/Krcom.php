@@ -87,7 +87,6 @@ class Krcom extends Downloader
         $this->videoQuality = $tempArray[0]['plate'];
         $this->downloadUrls[0] = $tempArray[0]['url'];
 
-        $this->outputVideosTitle();
         $this->downloadFile();
         $this->success($this->ffmpFileListTxt);
 
