@@ -17,7 +17,7 @@ class M3u8
      */
     public static function getUrls(string $contents):?array
     {
-        $pattern = '/\n[0-9a-zA-Z](.*?)[^\s]*/i';
+        $pattern = '/\n\/?[0-9a-zA-Z](.*?)[^\s]*/i';
         preg_match_all($pattern, $contents, $matches);
         
         if(isset($matches[0]) && is_array($matches[0])){
