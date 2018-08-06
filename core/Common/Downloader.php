@@ -99,7 +99,7 @@ class Downloader
             $urlCount = count($this->downloadUrls);
 
             foreach($this->downloadUrls as $uKey => $urlRow){
-                $this->fileSize = $fSize[$uKey];
+                $this->fileSize = isset($fSize[$uKey]) ? $fSize[$uKey] : self::DEFAULT_FILESIZE;
 
                 switch ($urlCount){
                     case 1:
@@ -224,9 +224,9 @@ class Downloader
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_AUTOREFERER => true,
-            CURLOPT_HEADEROPT => [
+            CURLOPT_HTTPHEADER => [
                 "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Encoding: gzip, deflate, br",
+//                "Accept-Encoding: gzip, deflate, br",
                 "Accept-Language: zh-CN,en-US;q=0.7,en;q=0.3",
                 "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
                 "HTTP_X_FORWARDED_FOR: {$ip}"

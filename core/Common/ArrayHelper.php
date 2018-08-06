@@ -34,4 +34,15 @@ class ArrayHelper
         array_multisort($tempArray, $sort, $array);
         return $array;
     }
+
+    public static function group(array $array, $groupKey):array
+    {
+        $result = [];
+        foreach($array as $value){
+            $result[$value[$groupKey]][] = $value;
+        }
+
+        return $result;
+    }
+
 }
