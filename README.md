@@ -24,7 +24,7 @@ php 写的视频下载工具：
 *   cURL  >= 7.37.0
 
 #   使用交流
-Discord地址（不使用天朝软件）：https://discord.gg/yuxfCy
+Discord地址：https://discord.gg/xvNQPaT
 
 #   代理配置
 *  config.php
