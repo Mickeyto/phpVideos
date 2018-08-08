@@ -43,7 +43,7 @@ class Porn extends Downloader
         $vidSource = $dom->getElementById('vid');
 
         if(empty($vidSource)){
-            throw new \ErrorException('该地址解析失败');
+            $this->error('Error：vid is empty');
         }
 
         $title = $dom->getElementsByTagName('title')->item(0)->nodeValue;
@@ -60,7 +60,7 @@ class Porn extends Downloader
         ];
 
         if(!$videosUrl){
-            throw new \ErrorException('该地址解析失败');
+            $this->error('Error：videos url is empty');
         }
 
         (new FileCache())->set($this->requestUrl, $videosInfo);
