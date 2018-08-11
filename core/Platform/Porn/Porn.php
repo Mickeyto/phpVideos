@@ -34,7 +34,7 @@ class Porn extends Downloader
         $html = Curl::get($this->requestUrl, $this->requestUrl, $curlProxy, false);
 
         if(!$html || empty($html[0])){
-            throw new \ErrorException('该地址解析失败');
+            $this->error('Error：not found html');
         }
 
         $libxmlErrors = libxml_use_internal_errors(true);
@@ -87,7 +87,7 @@ class Porn extends Downloader
         $this->videosTitle = $videosUrl['title'];
         $this->downloadUrls[0] = $videosUrl['url'];
 
-        $this->downloadFile([], $curlProxy);
+        $this->downloadFile(['totalSize' => self::DEFAULT_FILESIZE, 'list' => [self::DEFAULT_FILESIZE]], $curlProxy);
         $this->success($this->ffmpFileListTxt);
     }
 
