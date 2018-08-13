@@ -1,20 +1,10 @@
-# Created by .ignore support plugin (hsz.mobi)
-### Example user template template
-### Example user template
-
 # IntelliJ project files
 .idea
-youku-player.min.js
 .DS_Store
 downloadTest.php
 command.php
 test.php
-TX-video-.js
-txv.core.js
-vplay.play.js
 pornhub.html
-youtube-base.js
-29464e1289app.js
-iqiyi-cmd5x.js
-config.php
-twitter.js
+Runtime
+Videos
+JS
