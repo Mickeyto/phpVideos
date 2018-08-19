@@ -55,7 +55,7 @@ class Qq extends Downloader
         //https://v.qq.com/x/cover/m441e3rjq9kwpsc/h00251u5sdp.html?
         $baseName = pathinfo($this->requestUrl, PATHINFO_BASENAME);
         if(!$baseName){
-            throw new \ErrorException('无法匹配 vid');
+            $this->error('Error：无法匹配 vid');
         }
 
         $vid = substr($baseName, 0, 11);
@@ -112,7 +112,7 @@ class Qq extends Downloader
             return $keyInfo[0];
         }
 
-        throw new \ErrorException('无法获取 key');
+        $this->error('Error：无法获取 key');
     }
 
     /**
@@ -150,6 +150,10 @@ class Qq extends Downloader
         $videosListInfo = self::getVideosInfo($vid);
 
         $videosTitle = $videosListInfo['vl']['vi'][0]['ti'];
+
+        if(empty($videosTitle)){
+            $videosTitle = md5($this->requestUrl);
+        }
 
         $this->setVideosTitle($videosTitle);
 
