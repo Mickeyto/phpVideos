@@ -149,10 +149,22 @@ class Qq extends Downloader
         $vid = $this->getVid();
         $videosListInfo = self::getVideosInfo($vid);
 
+        if(!isset($videosListInfo['vl']['vi'][0]['ti'])){
+            $this->error("Error：videos title not found");
+        }
+
         $videosTitle = $videosListInfo['vl']['vi'][0]['ti'];
 
         if(empty($videosTitle)){
             $videosTitle = md5($this->requestUrl);
+        }
+
+        if(!isset($videosListInfo['fl']['fi'])){
+            $this->error('Error：videos info not found fi');
+        }
+        $videosArrayCount = count($videosListInfo['fl']['fi']);
+        if($videosArrayCount < 1){
+            $this->error('Error：videos info not array');
         }
 
         $this->setVideosTitle($videosTitle);
