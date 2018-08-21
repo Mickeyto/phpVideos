@@ -52,15 +52,25 @@ class Qq extends Downloader
      */
     public function getVid():?string
     {
+        $html = Curl::get($this->requestUrl, $this->requestUrl);
+        preg_match_all("/url=(.*)?&ptag/i", $html[0], $matches);
+
+        $baseName = pathinfo($matches[1][0], PATHINFO_BASENAME);
+        parse_str($baseName, $parseArray);
+
+        if(!isset($parseArray['vid'])){
+            $this->error('Error：无法匹配 vid');
+        }
+
         //https://v.qq.com/x/cover/m441e3rjq9kwpsc/h00251u5sdp.html?
-        $baseName = pathinfo($this->requestUrl, PATHINFO_BASENAME);
+        /*$baseName = pathinfo($this->requestUrl, PATHINFO_BASENAME);
         if(!$baseName){
             $this->error('Error：无法匹配 vid');
         }
 
-        $vid = substr($baseName, 0, 11);
+        $vid = substr($baseName, 0, 11);*/
 
-        return $vid;
+        return $parseArray['vid'];
     }
 
     /**
