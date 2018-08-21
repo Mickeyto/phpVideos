@@ -125,7 +125,15 @@ class Iqiyi extends Downloader
             $vid = $div->getAttribute('data-player-videoid');
 
             if(empty($tvid)){
-                $this->error('Errors：tvid empty');
+                $iqiyiMain = $dom->getElementById('iqiyi-main');
+                $pageInfo = $this->getPageInfo($iqiyiMain);
+
+                if(empty($pageInfo)){
+                    $this->error('Errors：tvid empty');
+                }
+
+                $tvid = $pageInfo['tvId'];
+                $vid = $pageInfo['vid'];
             }
             if(empty($vid)){
                 $this->error('Errors：vid empty');
@@ -140,6 +148,23 @@ class Iqiyi extends Downloader
         }
 
         return $videoInfo;
+    }
+
+    /**
+     * @param \DOMElement $dom
+     * @return array
+     */
+    public function getPageInfo(\DOMElement $dom):array
+    {
+        $iqiyiMainDiv = $dom->getElementsByTagName('div');
+        $pageInfo = $iqiyiMainDiv->item(0)->getAttribute(':page-info');
+
+        if(!$pageInfo){
+            $this->error('Error：div page info is empty');
+        }
+        $pageInfo = json_decode($pageInfo, true);
+
+        return $pageInfo;
     }
 
     /**
