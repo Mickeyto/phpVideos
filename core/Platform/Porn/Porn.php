@@ -47,6 +47,7 @@ class Porn extends Downloader
         }
 
         $title = $dom->getElementsByTagName('title')->item(0)->nodeValue;
+        $title = str_replace(PHP_EOL, '', $title);
 
         $this->setVideosTitle($title);
 
