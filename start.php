@@ -29,7 +29,7 @@ $domain = parse_url($url, PHP_URL_HOST);
 $domain = \core\Http\Domain::match($url);
 
 if($domain){
-    if($domain == '91p25'){
+    if(in_array($domain, ['91p25', '91porn'])){
         $domain = 'Porn';
     }
 
