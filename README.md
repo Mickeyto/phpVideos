@@ -37,7 +37,7 @@ Discord地址：https://discord.gg/xvNQPaT
     </pre>
     
 #   使用方法
-php start 'link_address'
+php start.php 'link_address'
 
 ![image](https://image.ibb.co/mysKyd/Jul_21_2018_21_38_34.gif)
 
