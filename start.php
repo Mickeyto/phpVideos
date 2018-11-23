@@ -37,7 +37,7 @@ if($domain){
 
     $classFile = __DIR__ . str_replace('\\', DIRECTORY_SEPARATOR, $className);
     if(!file_exists($classFile.'.php')){
-        echo("\033[31m  No such file or directory \033[0m".PHP_EOL);
+        echo("\033[31m  No Support \033[0m".PHP_EOL);
         exit(0);
     }
 
