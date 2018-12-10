@@ -109,7 +109,7 @@ class Qq extends Downloader
     public function getKey($format,string $fileName):array
     {
         //https://h5vv.video.qq.com/getkey?otype=json&vid=t0195b4eoyw&format=10701&filename=t0195b4eoyw.p701.mp4&platform=1
-        $getKeyUrl = 'https://h5vv.video.qq.com/getkey?otype=ojson&vid='. $this->getVid() .'&format='. $format .'&filename='. $fileName . '&platform=1';
+        $getKeyUrl = 'https://h5vv.video.qq.com/getkey?otype=ojson&vid='. $this->getVid() .'&format='. $format .'&filename='. $fileName . '&platform=2';
 
         $keyInfo = Curl::get($getKeyUrl, $this->requestUrl);
         if($keyInfo){
