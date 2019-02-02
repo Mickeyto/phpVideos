@@ -22,7 +22,7 @@ class FFmpeg
         $outFileName .= '.mp4';
         $outputPath .= $outFileName;
 
-        $command = "ffmpeg -y -f concat -safe -1 -i {$fileListText} -c copy -bsf:a aac_adtstoasc '" . $outputPath .'\'';
+        $command = "ffmpeg -y -f concat -safe -1 -i {$fileListText} -c copy -bsf:a aac_adtstoasc '" . $outputPath .'\' 2>&1 ';
         $execInfo = shell_exec($command);
 
         return $execInfo;

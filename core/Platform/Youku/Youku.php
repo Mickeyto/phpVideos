@@ -87,7 +87,7 @@ class Youku extends Downloader
         $clientTs = $this->getClientTs();
         $utid = $this->getUtid();
         $httpReferer = 'https://tv.youku.com';
-        $ccode = '0518';
+        $ccode = '0521';
 
         $youkuVideoUrl = 'https://ups.youku.com/ups/get.json?vid='. $vid .'&ccode=' . $ccode . '&client_ip=192.168.1.1&client_ts=' . $clientTs .'&utid=' . $utid .'&ckey=' . $ckey;
 
