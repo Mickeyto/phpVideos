@@ -26,7 +26,7 @@ php 写的视频下载工具：
 #   使用交流
 Discord地址：https://discord.gg/xvNQPaT
 
-QQ 群：302393963
+QQ 群：<img src="https://i.ibb.co/DtvFF1k/8-AC40-BE4-F5-D21-B030-E17-E4-C27-CB87-AC0.jpg" height="50%">
 
 #   代理配置
 *  config.php
