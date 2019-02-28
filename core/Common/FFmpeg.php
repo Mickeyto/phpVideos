@@ -28,4 +28,24 @@ class FFmpeg
         return $execInfo;
     }
 
+    /**
+     * 合并音、视频
+     * @param string $videoFile
+     * @param string $audioFile
+     * @param string $fileName
+     * @param string $outputPath
+     * @param string $fileExt
+     * @return string
+     */
+    public static function mergeVideoAudio(string $videoFile,string $audioFile,string $fileName,  string $outputPath='./Videos/', $fileExt='mp4'):?string
+    {
+        $fileName .= '.' . $fileExt;
+        $outputPath .= $fileName;
+
+        $command = "ffmpeg -y -i {$videoFile} -i {$audioFile} -vcodec copy -acodec copy '" . $outputPath .'\' 2>&1 ';
+        $execInfo = shell_exec($command);
+
+        return $execInfo;
+    }
+
 }
