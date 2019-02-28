@@ -144,8 +144,11 @@ class Bilibili extends Downloader
                         ]
                     ];
                 }
+
+                $videoTitle = $urlJson['title'] . str_replace([' ', '\\', '/', '\'', '&'], '', $row['part']);
+
                 $pagesUrl[] = [
-                    'title' => str_replace([' ', '\\', '/', '\'', '&'], '', $row['part']),
+                    'title' => $videoTitle,
                     'cid' => $row['cid'],
                     'file' => $fileSizeArray,
                     'videoQuality' => $videoQuality,
