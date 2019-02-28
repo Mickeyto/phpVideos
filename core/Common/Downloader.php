@@ -174,11 +174,16 @@ class Downloader
 
     /**
      * @param string $videosTitle
+     * @param array $search
      * @return Downloader
      */
-    public function setVideosTitle(string $videosTitle):self
+    public function setVideosTitle(string $videosTitle,array $search=[]):self
     {
-        $this->videosTitle = str_replace([' ', '\\', '/', '\''], '',$videosTitle);
+        if(count($search) < 1){
+            $search = [' ', '\\', '/', '\'', '&'];
+        }
+
+        $this->videosTitle = str_replace($search, '',$videosTitle);
 
         return $this;
     }

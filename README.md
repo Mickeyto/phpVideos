@@ -14,6 +14,7 @@ php 写的视频下载工具：
 |   爱奇艺  |   :white_check_mark:  |
 |   Weibo  |   :white_check_mark:  |
 |   Twitter  |   :white_check_mark:  |
+|   Bilibili（B站）  |   :white_check_mark:  |
 # 环境依赖
 *   PHP >= 7.1.3
 *   OpenSSL PHP Extension
