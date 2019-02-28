@@ -28,7 +28,7 @@ class Bilibili extends Downloader
 
     public function initAvid():void
     {
-        preg_match_all("/video\/av(.+?)\//i", $this->requestUrl, $matchAid);
+        preg_match_all("/video\/av(.+?)[\/ | \?]/i", $this->requestUrl, $matchAid);
 
         $this->avid = isset($matchAid[1]) ? $matchAid[1][0] : '';
     }
@@ -167,7 +167,8 @@ class Bilibili extends Downloader
 
         if($pagesUrlCount > 0){
             foreach($pagesUrl as $row){
-                $this->setVideosTitle($row['title']);
+                $title = $row['cid'] . '-' . $row['title'];
+                $this->setVideosTitle($title);
                 $this->videoQuality = $row['videoQuality'];
                 
                 if(isset($row['url']['video_audio'])){
@@ -198,8 +199,8 @@ class Bilibili extends Downloader
                     }
                 }
 
+                $this->tempSaveFiles = [];
                 $this->success($this->ffmpFileListTxt);
-
             }
         }
     }
