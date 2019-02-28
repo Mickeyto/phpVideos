@@ -37,7 +37,7 @@ class Bilibili extends Downloader
      * @note https://api.bilibili.com/x/web-interface/view?aid=44640089
      * @throws \ErrorException
      */
-    public function setApiCid()
+    public function setApiCid():void
     {
         if(empty($this->avid)){
             $this->error('aid is empty');
@@ -104,15 +104,20 @@ class Bilibili extends Downloader
         return $json;
     }
 
-
     /**
      * @return array
      * @throws \ErrorException
      */
-    public function multiPageUrl()
+    public function multiPageUrl():array
     {
         //pages
         $pagesUrl = [];
+        $cacheKey = $this->avid.'bilibili-' . $this->avid;
+        $playurlCache = (new FileCache())->get($cacheKey);
+        if($playurlCache){
+            return $playurlCache;
+        }
+
         if(count($this->pages) > 0){
             foreach($this->pages as $row){
                 $fileSizeArray = [];
@@ -149,6 +154,9 @@ class Bilibili extends Downloader
                 ];
             }
         }
+
+        //save cache
+        (new FileCache())->set($cacheKey, $pagesUrl, 300);
 
         return $pagesUrl;
     }
@@ -204,4 +212,5 @@ class Bilibili extends Downloader
             }
         }
     }
+
 }

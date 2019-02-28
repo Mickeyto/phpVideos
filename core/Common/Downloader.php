@@ -180,7 +180,7 @@ class Downloader
     public function setVideosTitle(string $videosTitle,array $search=[]):self
     {
         if(count($search) < 1){
-            $search = [' ', '\\', '/', '\'', '&'];
+            $search = [' ', '\\', '/', '\'', '&', ')', '(', '*'];
         }
 
         $this->videosTitle = str_replace($search, '',$videosTitle);
