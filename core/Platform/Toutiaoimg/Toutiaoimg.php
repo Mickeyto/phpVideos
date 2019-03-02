@@ -177,7 +177,7 @@ JAVASCRIPT;
         $_s = $this->getMicrotime();
 
         $apiUrl = 'https://ib.365yg.com';
-        $locationPathname = '/video/urls/v/1/toutiao/mp4/003d89b422634630b48a60452c058c2a?r=' . $r;
+        $locationPathname = '/video/urls/v/1/toutiao/mp4/'. $vid .'?r=' . $r;
 
         $s = $this->generateS($locationPathname);
         $apiUrl .= $locationPathname .'&s='. $s .'&aid=1364&vfrom=xgplayer&callback=' . $this->jsonp .'&_=' . $_s;
