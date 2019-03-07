@@ -16,6 +16,7 @@ php 写的视频下载工具：
 |   Twitter  |   :white_check_mark:  |
 |   Bilibili（B站）  |   :white_check_mark:  |
 |   今日头条  |   :white_check_mark:  |
+|   芒果TV  |   :white_check_mark:  |
 # 环境依赖
 *   PHP >= 7.1.3
 *   OpenSSL PHP Extension
