@@ -88,13 +88,13 @@ class Toutiaoimg extends Downloader
         }
 
         preg_match_all('/videoId:\s?\'(.*)\'/i', $response[0], $matches);
-        preg_match('/<title>(.*?)<\/title>/i', $response[0], $titleMatches);
+        preg_match('/<title>(.*?)<\/title>/i', $response[0], $matchesTitle);
 
         if(!isset($matches[1][0])){
             $this->error('videoId matches error');
         }
-        if(isset($titleMatches[1])){
-            $this->setVideosTitle($titleMatches[1]);
+        if(isset($matchesTitle[1])){
+            $this->setVideosTitle($matchesTitle[1]);
         } else {
             $this->setVideosTitle('toutiao-' . $this->vid);
         }
