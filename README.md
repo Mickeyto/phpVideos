@@ -53,3 +53,6 @@ rpm -ivh http://mirror.city-fan.org/ftp/contrib/yum-repo/city-fan.org-release-2-
 yum --enablerepo=city-fan.org update curl
 </pre>
 curl 升级之后， php 需要重新编译，不能单独编译 php-curl 扩展
+
+# Windows10 使用教程
+https://youtu.be/KPKoTLtGNOs
