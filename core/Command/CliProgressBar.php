@@ -31,9 +31,19 @@ class CliProgressBar
     {
         if($barLength > 0){
             $this->barLength = $barLength;
+        } else {
+            $this->initBarLength();
         }
         $this->setColor();
         $this->output();
+    }
+
+    public function initBarLength():void
+    {
+        exec('tput cols', $output);
+        if(isset($output[0])){
+            $this->barLength = $output[0] >> 1;
+        }
     }
 
     public function __get($name)

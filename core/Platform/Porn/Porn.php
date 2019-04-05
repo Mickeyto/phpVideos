@@ -11,6 +11,7 @@ use core\Cache\FileCache;
 use core\Common\Downloader;
 use core\Config\Config;
 use core\Http\Curl;
+use \DOMDocument;
 
 class Porn extends Downloader
 {
@@ -38,7 +39,7 @@ class Porn extends Downloader
         }
 
         $libxmlErrors = libxml_use_internal_errors(true);
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->loadHTML($html[0]);
         $vidSource = $dom->getElementById('vid');
 

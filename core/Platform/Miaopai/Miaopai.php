@@ -9,8 +9,9 @@ namespace core\Platform\Miaopai;
 
 use core\Cache\FileCache;
 use core\Common\Downloader;
-use core\Common\FFmpeg;
 use core\Http\Curl;
+use \ErrorException;
+use \DOMDocument;
 
 class Miaopai extends Downloader
 {
@@ -45,12 +46,12 @@ class Miaopai extends Downloader
             if(!isset($matches[1]) && !is_array($matches[1])){
                 (new FileCache())->delete($this->requestUrl);
 
-                throw new \ErrorException('无法解析该地址');
+                throw new ErrorException('无法解析该地址');
             }
 
             $errors = libxml_use_internal_errors(true);
 
-            $dom = new \DOMDocument('1.0', 'UTF-8');
+            $dom = new DOMDocument('1.0', 'UTF-8');
             $dom->recover = true;
             $dom->strictErrorChecking = false;
             $dom->loadHTML($res[0]);
@@ -60,7 +61,7 @@ class Miaopai extends Downloader
 
             if($titleItem->length < 1 || !isset($matches[1][0])){
                 (new FileCache())->delete($this->requestUrl);
-                throw new \ErrorException('无法解析该地址');
+                throw new ErrorException('无法解析该地址');
             }
 
             $videosTitle = $titleItem->item(0)->textContent;
@@ -87,7 +88,7 @@ class Miaopai extends Downloader
             libxml_use_internal_errors($errors);
 
         } else {
-            throw new \ErrorException('not found page');
+            throw new ErrorException('not found page');
         }
 
     }
