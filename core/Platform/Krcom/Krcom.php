@@ -13,6 +13,8 @@ use core\Cache\FileCache;
 use core\Common\ArrayHelper;
 use core\Common\Downloader;
 use core\Http\Curl;
+use \DOMDocument;
+use \ErrorException;
 
 class Krcom extends Downloader
 {
@@ -22,7 +24,7 @@ class Krcom extends Downloader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download():void
     {
@@ -36,13 +38,13 @@ class Krcom extends Downloader
         if(!$htmlFile){
             $c = Curl::get($this->requestUrl, $this->requestUrl, [], false);
             if(!$c){
-                throw new \ErrorException('无法获取 HTML 内容');
+                throw new ErrorException('无法获取 HTML 内容');
             }
             $htmlFile = (new FileCache())->setFileDir('Html/')->setFile($this->requestUrl, $c[0]);
         }
 
         $libxmlErros = libxml_use_internal_errors(true);
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
 
         $dom->loadHTMLFile($htmlFile);
 
@@ -52,7 +54,7 @@ class Krcom extends Downloader
         libxml_use_internal_errors($libxmlErros);
 
         if($el->length < 17){
-            throw new \ErrorException('无法解析内容');
+            throw new ErrorException('无法解析内容');
         }
 
 
@@ -79,7 +81,7 @@ class Krcom extends Downloader
         }
 
         if(!$tempArray){
-            throw new \ErrorException('获取视频地址失败');
+            throw new ErrorException('获取视频地址失败');
         }
 
         $tempArray = ArrayHelper::multisort($tempArray, 'plate', SORT_DESC);

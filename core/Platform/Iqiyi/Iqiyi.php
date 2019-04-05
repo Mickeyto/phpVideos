@@ -8,13 +8,13 @@
 namespace core\Platform\Iqiyi;
 
 use core\Cache\FileCache;
-use core\Command\CliProgressBar;
 use core\Common\ArrayHelper;
 use core\Common\Downloader;
 use core\Common\FFmpeg;
-use core\Common\File;
 use core\Common\M3u8;
 use core\Http\Curl;
+use \DOMDocument;
+use \DOMElement;
 
 class Iqiyi extends Downloader
 {
@@ -105,7 +105,7 @@ class Iqiyi extends Downloader
 
             $libErrors = libxml_use_internal_errors(true);
 
-            $dom = new \DOMDocument();
+            $dom = new DOMDocument();
             $dom->loadHTML($html[0]);
             $element = $dom->documentElement;
             $titleItem = $element->getElementsByTagName('title');
@@ -151,10 +151,10 @@ class Iqiyi extends Downloader
     }
 
     /**
-     * @param \DOMElement $dom
+     * @param DOMElement $dom
      * @return array
      */
-    public function getPageInfo(\DOMElement $dom):array
+    public function getPageInfo(DOMElement $dom):array
     {
         $iqiyiMainDiv = $dom->getElementsByTagName('div');
         $pageInfo = $iqiyiMainDiv->item(0)->getAttribute(':page-info');
