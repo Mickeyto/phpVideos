@@ -14,6 +14,7 @@ use core\Common\Downloader;
 use core\Common\FFmpeg;
 use core\Common\M3u8;
 use core\Http\Curl;
+use \ErrorException;
 
 class Mgtv extends Downloader
 {
@@ -62,7 +63,7 @@ class Mgtv extends Downloader
     /**
      * 匹配 html 页面 vid
      * @return string
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function matchHtmlVidAndTitle():string
     {
@@ -106,7 +107,7 @@ class Mgtv extends Downloader
     /**
      * @param int $clt
      * @return mixed
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getVideoInfo(int $clt)
     {
@@ -137,7 +138,7 @@ class Mgtv extends Downloader
 
     /**
      * @return array|string|null
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getSource()
     {
@@ -174,7 +175,7 @@ class Mgtv extends Downloader
 
     /**
      * @return array
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getM3u8UrlInfo():array
     {
@@ -219,7 +220,7 @@ class Mgtv extends Downloader
     /**
      * @param array $m3u8Url
      * @return array
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getM3u8Ts(array $m3u8Url)
     {
@@ -272,7 +273,7 @@ class Mgtv extends Downloader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download(): void
     {

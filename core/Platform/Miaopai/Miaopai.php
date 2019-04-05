@@ -21,7 +21,7 @@ class Miaopai extends Downloader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download():void
     {

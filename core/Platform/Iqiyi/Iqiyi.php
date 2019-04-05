@@ -15,6 +15,7 @@ use core\Common\M3u8;
 use core\Http\Curl;
 use \DOMDocument;
 use \DOMElement;
+use \ErrorException;
 
 class Iqiyi extends Downloader
 {
@@ -58,7 +59,7 @@ class Iqiyi extends Downloader
      * @param string $tvid
      * @param string $vid
      * @return array|mixed|null|string
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getTmts(string $tvid, string $vid):array
     {
@@ -89,7 +90,7 @@ class Iqiyi extends Downloader
 
     /**
      * @return array
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getVideosInfo():array
     {
@@ -168,7 +169,7 @@ class Iqiyi extends Downloader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download(): void
     {

@@ -12,6 +12,7 @@ use core\Common\Downloader;
 use core\Config\Config;
 use core\Http\Curl;
 use \DOMDocument;
+use \ErrorException;
 
 class Porn extends Downloader
 {
@@ -23,7 +24,7 @@ class Porn extends Downloader
     /**
      * @param array $curlProxy
      * @return array|bool|null
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getVideosUrl(array $curlProxy=[]):?array
     {
@@ -72,7 +73,7 @@ class Porn extends Downloader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download():void
     {

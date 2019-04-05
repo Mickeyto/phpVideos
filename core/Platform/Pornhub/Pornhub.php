@@ -27,7 +27,7 @@ class Pornhub extends Downloader
     /**
      * @param array $curlOptions
      * @return bool|null|string
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getVideosJson(?array $curlOptions=[]):?string
     {
@@ -56,7 +56,7 @@ class Pornhub extends Downloader
         $javaScript = $player->nodeValue;
 
         if(!$videosId){
-            throw new ErrorException('无法解析该视频');
+            $this->error('无法解析该视频');
         }
 
         $patter = "/flashvars_{$videosId} = (.*?)};/is";
@@ -64,7 +64,7 @@ class Pornhub extends Downloader
 
 
         if(!isset($matches[1][0])){
-            throw new ErrorException('无法解析该视频真实地址');
+            $this->error('无法解析该视频真实地址');
         }
 
         unset($dom);
@@ -95,7 +95,7 @@ class Pornhub extends Downloader
 
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download():void
     {

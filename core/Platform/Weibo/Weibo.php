@@ -11,6 +11,7 @@ namespace core\Platform\Weibo;
 
 use core\Common\Downloader;
 use core\Http\Curl;
+use \ErrorException;
 
 class Weibo extends Downloader
 {
@@ -46,7 +47,7 @@ class Weibo extends Downloader
      * url：https://m.weibo.cn/statuses/show?id=Gte2peqo6
      * @param string $vid
      * @return array|null
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getVideosInfo(string $vid):?array
     {
@@ -87,7 +88,7 @@ class Weibo extends Downloader
 
     /**
      * html5 Url: https://m.weibo.cn/status/Gte2peqo6?fid=1034%3A4269653577684456&jumpfrom=weibocom
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download(): void
     {
