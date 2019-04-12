@@ -8,6 +8,7 @@
 namespace core\Http;
 
 use core\Cache\FileCache;
+use \ErrorException;
 
 class Curl
 {
@@ -18,7 +19,7 @@ class Curl
      * @param bool $resCache
      * @param bool $ip
      * @return array|null
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public static function get(string $url,string $httpReferer,array $options=[],bool $resCache=false, $ip=false):?array
     {

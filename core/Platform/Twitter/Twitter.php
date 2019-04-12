@@ -15,6 +15,7 @@ use core\Common\FFmpeg;
 use core\Common\M3u8;
 use core\Config\Config;
 use core\Http\Curl;
+use \ErrorException;
 
 class Twitter extends Downloader
 {
@@ -41,7 +42,7 @@ class Twitter extends Downloader
     /**
      * @param string $vid
      * @return array
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getVideos(string $vid):array
     {
@@ -93,7 +94,7 @@ class Twitter extends Downloader
     /**
      * @param array $videosInfo
      * @return array
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getM3u8(array $videosInfo):array
     {
@@ -126,7 +127,7 @@ class Twitter extends Downloader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download(): void
     {

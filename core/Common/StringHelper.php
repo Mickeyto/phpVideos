@@ -11,5 +11,16 @@ namespace core\Common;
 
 class StringHelper
 {
+    /**
+     * @param string $str
+     * @param string $replace
+     * @param array $search
+     * @return string
+     */
+    public static function replace(string $str, $replace='',array $search = [' ', '\\', '/', '\'', '&', ')', '(', '*'])
+    {
+        $newString = str_replace($search, $replace, $str);
+        return $newString;
+    }
 
 }

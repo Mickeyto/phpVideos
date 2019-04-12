@@ -13,6 +13,7 @@ use core\Common\FFmpeg;
 use core\Common\M3u8;
 use core\Config\Config;
 use core\Http\Curl;
+use \ErrorException;
 
 class Xvideos extends Downloader
 {
@@ -29,7 +30,7 @@ class Xvideos extends Downloader
      * @param $videoId
      * @param array $curlProxy
      * @return array|bool|null
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getVideosInfo(string $videoId, array $curlProxy=[]):?array
     {
@@ -41,7 +42,7 @@ class Xvideos extends Downloader
             if($getJson){
                 $json = json_decode($getJson[0], true);
                 if(false === $json['exist']){
-                    throw new \ErrorException('获取json 失败');
+                    $this->error('获取json 失败');
                 }
                 if(!empty($json['mp4_high'])){
                     $urlCache = [
@@ -67,7 +68,7 @@ class Xvideos extends Downloader
     /**
      * @param array $curlProxy
      * @return array|bool|null
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function matchMp4(array $curlProxy=[]):?array
     {
@@ -111,7 +112,7 @@ class Xvideos extends Downloader
     /**
      * @param array $curlProxy
      * @return array|bool|null
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function matchM3u8(array $curlProxy=[]):?array
     {
@@ -173,7 +174,7 @@ class Xvideos extends Downloader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download():void
     {

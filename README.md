@@ -8,7 +8,7 @@ php 写的视频下载工具：
 |   腾讯  |   :white_check_mark:  |
 |   XVideos |   :white_check_mark:  |
 |   Pornhub |  :white_check_mark: |
-|   91（不提供地址）   |   :white_check_mark:  |
+|   91porn   |   :white_check_mark:  |
 |   微博酷燃    | :white_check_mark: |
 |   斗鱼  |   :white_check_mark:  |
 |   爱奇艺  |   :white_check_mark:  |
@@ -38,6 +38,7 @@ QQ 群：<img src="https://i.ibb.co/DtvFF1k/8-AC40-BE4-F5-D21-B030-E17-E4-C27-CB
     return [
         //http 代理配置
         'http_proxy' => 'http://127.0.0.1:1087',
+        'weiboCookie' => '',//微博 Cookie 配置
     ];
     </pre>
     
