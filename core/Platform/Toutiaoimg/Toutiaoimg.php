@@ -11,6 +11,7 @@ use core\Cache\FileCache;
 use core\Common\ArrayHelper;
 use core\Common\Downloader;
 use core\Http\Curl;
+use \ErrorException;
 
 class Toutiaoimg extends Downloader
 {
@@ -72,7 +73,7 @@ class Toutiaoimg extends Downloader
 
     /**
      * @return string
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function matchVideoIdAndTitle():string
     {
@@ -163,7 +164,7 @@ JAVASCRIPT;
      * @note https://ib.365yg.com/video/urls/v/1/toutiao/mp4/003d89b422634630b48a60452c058c2a?r=3861589717048173&s=1591039197&aid=1364&vfrom=xgplayer&callback=axiosJsonpCallback1&_=1551432390783
      * @param string $vid
      * @return array|mixed|string|null
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function videoDetail(string $vid)
     {
@@ -200,7 +201,7 @@ JAVASCRIPT;
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download(): void
     {

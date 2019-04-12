@@ -13,6 +13,7 @@ use core\Cache\FileCache;
 use core\Common\ArrayHelper;
 use core\Common\Downloader;
 use core\Http\Curl;
+use \ErrorException;
 
 class Qq extends Downloader
 {
@@ -24,7 +25,7 @@ class Qq extends Downloader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public static function getGuid()
     {
@@ -43,12 +44,12 @@ class Qq extends Downloader
             }
         }
 
-        throw new \ErrorException('无法获取 Guid');
+        throw new ErrorException('无法获取 Guid');
     }
 
     /**
      * @return bool|string
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getVid():?string
     {
@@ -76,7 +77,7 @@ class Qq extends Downloader
     /**
      * @param string $vid
      * @return mixed
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public static function getVideosInfo(string $vid)
     {
@@ -104,7 +105,7 @@ class Qq extends Downloader
      * @param $format
      * @param string $fileName
      * @return mixed
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getKey($format,string $fileName):array
     {
@@ -152,7 +153,7 @@ class Qq extends Downloader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download():void
     {

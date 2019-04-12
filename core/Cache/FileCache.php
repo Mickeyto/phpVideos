@@ -7,6 +7,8 @@
  */
 namespace core\Cache;
 
+use \ErrorException;
+
 class FileCache
 {
     public $rootPath;
@@ -29,12 +31,12 @@ class FileCache
      * @param $value
      * @param int $expire second
      * @return bool
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function set($key, $value,int $expire=0):bool
     {
         if(!is_string($key)){
-            throw new \ErrorException("Cache key name must be string");
+            throw new ErrorException("Cache key name must be string");
         }
 
         if(empty($value)){
@@ -76,16 +78,16 @@ class FileCache
      * @param string $data
      * @param string $suffix
      * @return null|string
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function setFile(string $key,string $data, string $suffix='.html'):?string
     {
         if(!is_string($key)){
-            throw new \ErrorException("Cache key name must be string");
+            throw new ErrorException("Cache key name must be string");
         }
 
         if(empty($this->fileDir)){
-            throw new \ErrorException('fileDir must set');
+            throw new ErrorException('fileDir must set');
         }
 
         $fileName = md5($key);

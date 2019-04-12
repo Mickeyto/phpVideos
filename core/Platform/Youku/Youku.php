@@ -12,6 +12,7 @@ use core\Common\Downloader;
 use core\Common\FFmpeg;
 use core\Http\Curl;
 use core\Cache\FileCache;
+use \ErrorException;
 
 class Youku extends Downloader
 {
@@ -31,7 +32,7 @@ class Youku extends Downloader
 
     /**
      * @return string
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getUtid():string
     {
@@ -46,7 +47,7 @@ class Youku extends Downloader
             $rule = '/Etag="(.+?)"/';
             preg_match_all($rule, $logEgJs, $matches);
             if(!$matches){
-                throw new \ErrorException('must be utid');
+                $this->error('must be utid');
             }
 
             $utid = urlencode($matches[1][0]);
@@ -78,7 +79,7 @@ class Youku extends Downloader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download():void
     {
@@ -140,7 +141,7 @@ class Youku extends Downloader
      * @param string $httpReferer
      * @param string $cacheFileName
      * @return bool|mixed|null
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public static function get(string $url,string $httpReferer,string $cacheFileName)
     {

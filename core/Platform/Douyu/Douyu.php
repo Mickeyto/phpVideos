@@ -12,6 +12,7 @@ use core\Common\Downloader;
 use core\Common\FFmpeg;
 use core\Common\M3u8;
 use core\Http\Curl;
+use \ErrorException;
 
 class Douyu extends Downloader
 {
@@ -24,7 +25,7 @@ class Douyu extends Downloader
      * PC：https://v.douyu.com/api/swf/getStreamUrl POST params:[did,tt（时间）,sign（未知加密）,vid]
      *
      * @return string
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getDid():string
     {
@@ -41,7 +42,7 @@ class Douyu extends Downloader
         if($getInfo){
             $json = json_decode($getInfo[0], true);
             if(!isset($json['data']['did'])){
-                throw new \ErrorException('Could not get did');
+                $this->error('Could not get did');
             }
 
             $defaultDid = $json['data']['did'];
@@ -54,7 +55,7 @@ class Douyu extends Downloader
     /**
      * @param string $vid
      * @return string
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getMobileInfo(string $vid):string
     {
@@ -84,7 +85,7 @@ class Douyu extends Downloader
     /**
      * @param string $vid
      * @return array|null|string
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getVideoTitle(string $vid):?string
     {
@@ -118,7 +119,7 @@ class Douyu extends Downloader
     /**
      * @param string $url
      * @return string
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getM3u8(string $url):string
     {
@@ -141,7 +142,7 @@ class Douyu extends Downloader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download():void
     {

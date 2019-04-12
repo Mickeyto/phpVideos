@@ -12,6 +12,7 @@ use core\Common\ArrayHelper;
 use core\Common\Downloader;
 use core\Common\FFmpeg;
 use core\Http\Curl;
+use \ErrorException;
 
 class Bilibili extends Downloader
 {
@@ -35,7 +36,7 @@ class Bilibili extends Downloader
 
     /**
      * @note https://api.bilibili.com/x/web-interface/view?aid=44640089
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function setApiCid():void
     {
@@ -66,7 +67,7 @@ class Bilibili extends Downloader
     /**
      * 爬取下来的是非 html 内容，暂不使用
      * @return array|null
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function matchHtml():?array
     {
@@ -80,7 +81,7 @@ class Bilibili extends Downloader
      * @note https://api.bilibili.com/x/player/playurl?avid=44640089&cid=78142881&fnver=0&fnval=16&type=&otype=json
      * @param string $cid
      * @return array|mixed|string|null
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function getPlayurl($cid='')
     {
@@ -106,7 +107,7 @@ class Bilibili extends Downloader
 
     /**
      * @return array
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function multiPageUrl():array
     {
@@ -165,7 +166,7 @@ class Bilibili extends Downloader
     }
 
     /**
-     * @throws \ErrorException
+     * @throws ErrorException
      */
     public function download(): void
     {
