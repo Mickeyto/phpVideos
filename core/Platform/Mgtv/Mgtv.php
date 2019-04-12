@@ -81,7 +81,7 @@ class Mgtv extends Downloader
             $this->setVideosTitle('mgtv-' . $this->vid);
         }
 
-        $vid = trim($matches[1]);
+        $vid = trim(trim($matches[1]), '"');
 
         return $vid;
     }

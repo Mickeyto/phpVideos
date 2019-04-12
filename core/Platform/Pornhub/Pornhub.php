@@ -12,7 +12,6 @@ use core\Common\ArrayHelper;
 use core\Common\Downloader;
 use core\Config\Config;
 use core\Http\Curl;
-use \DOMDocument;
 use \ErrorException;
 
 class Pornhub extends Downloader
@@ -35,40 +34,25 @@ class Pornhub extends Downloader
         if($videosJsonCache){
             return $videosJsonCache;
         }
-        //PHP cUrl 不做代理 ，直接走本地
-        //exec("curl {$this->requestUrl} > pornhub.html", $curlHtml);
 
         $html = Curl::get($this->requestUrl, 'https://www.pornhub.com/', $curlOptions);
         if(empty($html[0])){
             $this->error('request pornhub error');
         }
 
-        file_put_contents($this->pornhubHtmlFile, $html[0]);
+        preg_match_all('/<div\sid="player"\sclass="original\smainPlayerDiv"\sdata-video-id="(.*)">/', $html[0], $matchesVid);
 
-        $htmlErrors = libxml_use_internal_errors(true);
-        $dom = new DOMDocument();
-        $dom->loadHTMLFile($this->pornhubHtmlFile);
-        $player = $dom->getElementById('player');
-        $videosId = $player->getAttribute('data-video-id');
-
-        libxml_use_internal_errors($htmlErrors);
-
-        $javaScript = $player->nodeValue;
-
-        if(!$videosId){
+        if(!isset($matchesVid[1][0])){
             $this->error('无法解析该视频');
         }
 
-        $patter = "/flashvars_{$videosId} = (.*?)};/is";
-        preg_match_all($patter, $javaScript, $matches);
-
+        $patter = "/flashvars_{$matchesVid[1][0]} = (.*?)};/is";
+        preg_match_all($patter, $html[0], $matches);
 
         if(!isset($matches[1][0])){
             $this->error('无法解析该视频真实地址');
         }
 
-        unset($dom);
-        unlink($this->pornhubHtmlFile);
         (new FileCache())->set($this->requestUrl, $matches[1][0] . '}');
 
         return $matches[1][0] . '}';
@@ -93,7 +77,6 @@ class Pornhub extends Downloader
         return $videosList;
     }
 
-
     /**
      * @throws ErrorException
      */
@@ -116,9 +99,13 @@ class Pornhub extends Downloader
         }
 
         $videosList = ArrayHelper::multisort($videosList, 'quality', SORT_DESC);
+        $ind = 0;
+        if(is_array($videosList[$ind]['quality'])){
+            $ind += 1;
+        }
 
-        $this->videoQuality = $videosList[0]['quality'];
-        $this->downloadUrls[0] = $videosList[0]['videoUrl'];
+        $this->videoQuality = $videosList[$ind]['quality'];
+        $this->downloadUrls[0] = $videosList[$ind]['videoUrl'];
 
         $fileSizeArray = [
             'totalSize' => self::DEFAULT_FILESIZE,

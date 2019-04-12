@@ -104,38 +104,17 @@ class Iqiyi extends Downloader
                 $this->error('Errors：html empty');
             }
 
-            $libErrors = libxml_use_internal_errors(true);
+            //取消使用 DOMDocument 匹配
+            //$videoInfo = $this->documentPageInfo($html[0]);
 
-            $dom = new DOMDocument();
-            $dom->loadHTML($html[0]);
-            $element = $dom->documentElement;
-            $titleItem = $element->getElementsByTagName('title');
-            $div = $dom->getElementById('flashbox');
-            if($titleItem->length < 1){
-                $this->error('Errors：not found title');
+            $pageInfo = $this->matchPageInfo($html[0]);
+            if(empty($pageInfo)){
+                $this->error('Errors：tvid empty');
             }
-            $title = $titleItem->item(0)->nodeValue;
+            $tvid = $pageInfo['tvId'];
+            $vid = $pageInfo['vid'];
+            $title = $pageInfo['tvName'];
 
-            if(empty($title)){
-                $this->error('Errors：title is empty');
-            }
-
-            libxml_use_internal_errors($libErrors);
-
-            $tvid = $div->getAttribute('data-player-tvid');
-            $vid = $div->getAttribute('data-player-videoid');
-
-            if(empty($tvid)){
-                $iqiyiMain = $dom->getElementById('iqiyi-main');
-                $pageInfo = $this->getPageInfo($iqiyiMain);
-
-                if(empty($pageInfo)){
-                    $this->error('Errors：tvid empty');
-                }
-
-                $tvid = $pageInfo['tvId'];
-                $vid = $pageInfo['vid'];
-            }
             if(empty($vid)){
                 $this->error('Errors：vid empty');
             }
@@ -164,6 +143,73 @@ class Iqiyi extends Downloader
             $this->error('Error：div page info is empty');
         }
         $pageInfo = json_decode($pageInfo, true);
+
+        return $pageInfo;
+    }
+
+    /**
+     * 使用 DOMDocument 查找 tvid\vid 等
+     * @param string $html
+     * @return array
+     */
+    public function documentPageInfo(string $html):array
+    {
+        $libErrors = libxml_use_internal_errors(true);
+
+        $dom = new DOMDocument();
+        $dom->loadHTML($html);
+        $element = $dom->documentElement;
+        $titleItem = $element->getElementsByTagName('title');
+        $div = $dom->getElementById('flashbox');
+        if($titleItem->length < 1){
+            $this->error('Errors：not found title');
+        }
+        $title = $titleItem->item(0)->nodeValue;
+
+        if(empty($title)){
+            $this->error('Errors：title is empty');
+        }
+
+        libxml_use_internal_errors($libErrors);
+
+        $tvid = $div->getAttribute('data-player-tvid');
+        $vid = $div->getAttribute('data-player-videoid');
+
+        if(empty($tvid)){
+            $iqiyiMain = $dom->getElementById('iqiyi-main');
+            $pageInfo = $this->getPageInfo($iqiyiMain);
+
+            if(empty($pageInfo)){
+                $this->error('Errors：tvid empty');
+            }
+
+            $tvid = $pageInfo['tvId'];
+            $vid = $pageInfo['vid'];
+        }
+
+        $videoInfo = [
+            'title' => $title,
+            'tvid' => $tvid,
+            'vid' => $vid,
+        ];
+
+        return $videoInfo;
+    }
+
+    /**
+     * @date 2019-04-10
+     * @param string $str
+     * @param string $pattern
+     * @return array
+     */
+    public function matchPageInfo(string $str, string $pattern="/:page-info='(.+?)'/i"):array
+    {
+        preg_match_all($pattern, $str, $matches);
+
+        if(!$matches){
+            $this->error('Error：div page info is empty');
+        }
+        $pageInfo = json_decode($matches[1][0], true);
 
         return $pageInfo;
     }

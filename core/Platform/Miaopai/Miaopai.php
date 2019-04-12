@@ -11,13 +11,49 @@ use core\Cache\FileCache;
 use core\Common\Downloader;
 use core\Http\Curl;
 use \ErrorException;
-use \DOMDocument;
 
 class Miaopai extends Downloader
 {
     public function __construct(string $url)
     {
         $this->requestUrl = $url;
+    }
+
+    /**
+     * @param string $smid
+     * @return array
+     * @throws ErrorException
+     */
+    public function getVideoInfo(string $smid):array
+    {
+        $apiUrl = 'https://n.miaopai.com/api/aj_media/info.json?smid='. $smid .'&appid=530&_cb=_jsonpoom96huif8r';
+
+        $res = Curl::get($apiUrl, $this->requestUrl);
+        if(empty($res[0])){
+            $this->error('request json error');
+        }
+
+        preg_match_all('/_jsonpoom96huif8r\((.*)\);/i', $res[0], $matches);
+        if(!isset($matches[1]) && !is_array($matches[1])){
+            $this->error('无法解析该地址');
+        }
+
+        $json = json_decode($matches[1][0], true);
+        if(200 != $json['code']){
+            $this->error("error code：{$json['code']}");
+        }
+
+        $description = $json['data']['description'];
+        if(count($json['data']['meta_data']) < 1){
+            $this->error('not found meta_data');
+        }
+
+        $videoInfo = $json['data']['meta_data'][0]['play_urls'];
+
+        return [
+            'play_urls' => $videoInfo,
+            'description' => $description
+        ];
     }
 
     /**
@@ -39,58 +75,26 @@ class Miaopai extends Downloader
             exit(0);
         }
 
-        $res = Curl::get($this->requestUrl, $this->requestUrl);
+        $fileName = pathinfo($parseUrlPath, PATHINFO_FILENAME);
+        $videoInfo = $this->getVideoInfo($fileName);
 
-        if($res){
-            preg_match_all('/"videoSrc":"(.*?)",/i', $res[0], $matches);
-            if(!isset($matches[1]) && !is_array($matches[1])){
-                (new FileCache())->delete($this->requestUrl);
+        $playUrls = $videoInfo['play_urls'];
+        unset($playUrls['json']);
+        $videosUrl = array_shift($playUrls);
 
-                throw new ErrorException('无法解析该地址');
-            }
+        $this->setVideosTitle($videoInfo['description']);
 
-            $errors = libxml_use_internal_errors(true);
+        $gotoN = 1;
+        gotoVideosDownload:
+        $this->downloadUrls[0] = $videosUrl;
+        $vi = $this->downloadFile(); //下载
 
-            $dom = new DOMDocument('1.0', 'UTF-8');
-            $dom->recover = true;
-            $dom->strictErrorChecking = false;
-            $dom->loadHTML($res[0]);
-
-            $element = $dom->documentElement;
-            $titleItem = $element->getElementsByTagName('title');
-
-            if($titleItem->length < 1 || !isset($matches[1][0])){
-                (new FileCache())->delete($this->requestUrl);
-                throw new ErrorException('无法解析该地址');
-            }
-
-            $videosTitle = $titleItem->item(0)->textContent;
-
-            $this->setVideosTitle($videosTitle);
-
-            $videosUrl = $matches[1][0];
-
-            //https://kscdn.miaopai.com/stream/xBghjLxNWzMYqIcEH0D5FDmMttMmBejfSo-nRw__.mp4?ssig=e52e308ef953d7b90898f1aa044555af&time_stamp=1531901900853
-
-            $gotoN = 1;
-            gotoVideosDownload:
-            $this->downloadUrls[0] = $videosUrl;
-            $vi = $this->downloadFile(); //下载
-
-            if($vi['fileSize'] == 1024 && $gotoN < 2){
-                $videosUrl = str_replace(['txycdn'], 'kscdn', $vi['info']['url']);
-                $gotoN++;
-                goto gotoVideosDownload;
-            }
-
-            $this->success($this->ffmpFileListTxt);
-
-            libxml_use_internal_errors($errors);
-
-        } else {
-            throw new ErrorException('not found page');
+        if($vi['fileSize'] == 1024 && $gotoN < 2){
+            $gotoN++;
+            goto gotoVideosDownload;
         }
 
+        $this->success($this->ffmpFileListTxt);
     }
 
 }
