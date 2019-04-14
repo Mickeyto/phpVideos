@@ -35,28 +35,24 @@ class Porn extends Downloader
 
         $html = Curl::get($this->requestUrl, $this->requestUrl, $curlProxy, false);
 
-        if(!$html || empty($html[0])){
+        if(empty($html[0])){
             $this->error('Error：not found html');
         }
 
-        $libxmlErrors = libxml_use_internal_errors(true);
-        $dom = new DOMDocument();
-        $dom->loadHTML($html[0]);
-        $vidSource = $dom->getElementById('vid');
-
-        if(empty($vidSource)){
-            $this->error('Error：vid is empty');
+        preg_match_all('/<div\sid="viewvideo-title">\s*(.*)\s*<\/div>/', $html[0], $matchesTitle);
+        if(!isset($matchesTitle[1][0])){
+            $this->error('Error：not found title');
         }
 
-        $title = $dom->getElementsByTagName('title')->item(0)->nodeValue;
-        $title = str_replace(PHP_EOL, '', $title);
+        preg_match_all('/<source\ssrc="(.*)"\stype="video\/mp4">/', $html[0], $matchesVideo);
+        if(!isset($matchesVideo[1][0])){
+            $this->error('Error：not found mp4 source');
+        }
 
+        $title = str_replace(PHP_EOL, '', $matchesTitle[1][0]);
         $this->setVideosTitle($title);
 
-        libxml_use_internal_errors($libxmlErrors);
-
-        $videosUrl = $vidSource->getElementsByTagName('source')->item(0)->getAttribute('src');
-
+        $videosUrl = $matchesVideo[1][0];
         $videosInfo = [
             'url' => $videosUrl,
             'title' => $this->videosTitle,
