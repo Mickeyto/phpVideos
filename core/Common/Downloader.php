@@ -74,8 +74,8 @@ class Downloader
             //file size
             if(!isset($fileSizeArray['totalSize'])){
                 $this->cliProgressBar->setStep(count($this->downloadUrls));
-                foreach($this->downloadUrls as $uKey =>  $urlRow){
-                    $contentLength = get_headers($urlRow, 1)['Content-Length'];
+                foreach($this->downloadUrls as $uKey => $urlRow){
+                    $contentLength = get_headers((string)$urlRow, 1)['Content-Length'];
                     if(is_array($contentLength) && count($contentLength) > 1){
                         $contentLength = $contentLength[1];
                     }
