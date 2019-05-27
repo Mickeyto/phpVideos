@@ -45,6 +45,7 @@ QQ 群：<img src="https://i.ibb.co/DtvFF1k/8-AC40-BE4-F5-D21-B030-E17-E4-C27-CB
 #   使用方法
 php start.php 'link_address'
 
+php start.php 'link_address' -i //show playlist
 ![image](https://image.ibb.co/mysKyd/Jul_21_2018_21_38_34.gif)
 
 #   其他
