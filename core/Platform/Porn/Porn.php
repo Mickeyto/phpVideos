@@ -129,9 +129,10 @@ class Porn extends Downloader
     }
 
     /**
+     * @param null $argvOpt
      * @throws ErrorException
      */
-    public function download():void
+    public function download($argvOpt=null):void
     {
         $httpProxy = Config::instance()->get('http_proxy');
         $curlProxy = [];
@@ -145,6 +146,12 @@ class Porn extends Downloader
 
         $this->videosTitle = $videosUrl['title'];
         $this->downloadUrls[0] = $videosUrl['url'];
+        $this->playlist = $videosUrl;
+
+        //show playlist
+        if(isset($argvOpt['i'])){
+            $this->outPlaylist();
+        }
 
         $this->downloadFile(['totalSize' => self::DEFAULT_FILESIZE, 'list' => [self::DEFAULT_FILESIZE]], $curlProxy);
         $this->success($this->ffmpFileListTxt);

@@ -215,9 +215,10 @@ class Iqiyi extends Downloader
     }
 
     /**
+     * @param null $argvOpt
      * @throws ErrorException
      */
-    public function download(): void
+    public function download($argvOpt=null): void
     {
         $videoInfo = $this->getVideosInfo();
         $tmtsInfo = $this->getTmts($videoInfo['tvid'], $videoInfo['vid']);
@@ -249,8 +250,14 @@ class Iqiyi extends Downloader
             array_push($tsUrl, $tempUrl);
         }
 
+        $this->playlist = $vidl;
         $this->downloadUrls = $tsUrl;
         $this->setVideosTitle($videoInfo['title']);
+
+        //show playlist
+        if(isset($argvOpt['i'])){
+            $this->outPlaylist();
+        }
 
         $this->videoQuality = $this->getQu($vidl[0]['vd']);
 

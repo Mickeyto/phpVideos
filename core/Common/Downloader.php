@@ -10,7 +10,6 @@ namespace core\Common;
 
 use core\Command\CliProgressBar;
 use core\Command\Console;
-use function Sodium\library_version_major;
 
 class Downloader
 {
@@ -25,6 +24,7 @@ class Downloader
     public $requestUrl = '';
     public $videoQuality = '';
     public $currentSize = 1;
+    public $playlist = [];
 
     /**
      * @var array
@@ -37,7 +37,10 @@ class Downloader
     public $cliProgressBar;
 
 
-    public function download():void
+    /**
+     * @param null $argvOpt
+     */
+    public function download($argvOpt=null):void
     {
 
     }
@@ -335,6 +338,13 @@ class Downloader
     {
         $errors = PHP_EOL ."\033[31m{$contents}\033[0m".PHP_EOL;
         echo $errors;
+        exit(0);
+    }
+
+    public function outPlaylist()
+    {
+        var_export($this->playlist);
+        echo PHP_EOL;
         exit(0);
     }
 

@@ -174,9 +174,10 @@ class Xvideos extends Downloader
     }
 
     /**
+     * @param null $argvOpt
      * @throws ErrorException
      */
-    public function download():void
+    public function download($argvOpt=null):void
     {
         $httpProxy = Config::instance()->get('http_proxy');
         $curlProxy = [];
@@ -197,10 +198,16 @@ class Xvideos extends Downloader
             ];
         }
 
+        $this->playlist = $videosInfo;
         $this->downloadUrls = $videosInfo['url'];
         $this->setVideosTitle($videosInfo['title']);
 
         $this->videoQuality = $videosInfo['type'];
+
+        //show playlist
+        if(isset($argvOpt['i'])){
+            $this->outPlaylist();
+        }
 
         $this->fileExt = '.ts';
         $downloadFileInfo = $this->downloadFile([], $curlProxy);

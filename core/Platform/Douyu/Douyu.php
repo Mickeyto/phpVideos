@@ -142,9 +142,10 @@ class Douyu extends Downloader
     }
 
     /**
+     * @param null $argvOpt
      * @throws ErrorException
      */
-    public function download():void
+    public function download($argvOpt=null):void
     {
         $urlInfo = parse_url($this->requestUrl, PHP_URL_PATH);
         $urlArray = explode('show/', $urlInfo);
@@ -177,6 +178,12 @@ class Douyu extends Downloader
         }
 
         $this->downloadUrls = $urls;
+        $this->playlist = $urls;
+
+        //show playlist
+        if(isset($argvOpt['i'])){
+            $this->outPlaylist();
+        }
 
         $downloadFileInfo = $this->downloadFile();
         if($downloadFileInfo < 1024){

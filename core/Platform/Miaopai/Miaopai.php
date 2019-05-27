@@ -57,9 +57,10 @@ class Miaopai extends Downloader
     }
 
     /**
+     * @param null $argvOpt
      * @throws ErrorException
      */
-    public function download():void
+    public function download($argvOpt=null):void
     {
         $parseUrlPath = parse_url($this->requestUrl, PHP_URL_PATH);
         $pathInfoExtension = pathinfo($parseUrlPath, PATHINFO_EXTENSION);
@@ -68,6 +69,7 @@ class Miaopai extends Downloader
             $this->videosTitle = 'MP-' . md5($this->requestUrl);
 
             $this->downloadUrls[0] = $this->requestUrl;
+            $this->playlist = [$this->requestUrl];
 
             $this->outputVideosTitle();
             $this->downloadFile();
@@ -82,7 +84,13 @@ class Miaopai extends Downloader
         unset($playUrls['json']);
         $videosUrl = array_shift($playUrls);
 
+        $this->playlist = $playUrls;
         $this->setVideosTitle($videoInfo['description']);
+
+        //show playlist
+        if(isset($argvOpt['i'])){
+            $this->outPlaylist();
+        }
 
         $gotoN = 1;
         gotoVideosDownload:

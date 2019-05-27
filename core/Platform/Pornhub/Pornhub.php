@@ -78,9 +78,10 @@ class Pornhub extends Downloader
     }
 
     /**
+     * @param null $argvOpt
      * @throws ErrorException
      */
-    public function download():void
+    public function download($argvOpt=null):void
     {
         $httpProxy = Config::instance()->get('http_proxy');
         $curlProxy = [];
@@ -106,6 +107,12 @@ class Pornhub extends Downloader
 
         $this->videoQuality = $videosList[$ind]['quality'];
         $this->downloadUrls[0] = $videosList[$ind]['videoUrl'];
+        $this->playlist = $videosList;
+
+        //show playlist
+        if(isset($argvOpt['i'])){
+            $this->outPlaylist();
+        }
 
         $fileSizeArray = [
             'totalSize' => self::DEFAULT_FILESIZE,

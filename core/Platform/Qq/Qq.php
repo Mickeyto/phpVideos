@@ -153,9 +153,10 @@ class Qq extends Downloader
     }
 
     /**
+     * @param null $argvOpt
      * @throws ErrorException
      */
-    public function download():void
+    public function download($argvOpt=null):void
     {
         $vid = $this->getVid();
         $videosListInfo = self::getVideosInfo($vid);
@@ -204,6 +205,12 @@ class Qq extends Downloader
         $requestVideosUrl = $videosUrl . $fileKeyId . '?vkey='.$videosKey['key'];
 
         $this->downloadUrls[0] = $requestVideosUrl;
+        $this->playlist = [$requestVideosUrl];
+
+        //show playlist
+        if(isset($argvOpt['i'])){
+            $this->outPlaylist();
+        }
 
         $downInfo = $this->downloadFile();
 
