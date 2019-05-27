@@ -79,9 +79,10 @@ class Youku extends Downloader
     }
 
     /**
+     * @param null $argvOpt
      * @throws ErrorException
      */
-    public function download():void
+    public function download($argvOpt=null):void
     {
         $vid = $this->getVid();
         $ckey = $this->getCKey();
@@ -102,6 +103,12 @@ class Youku extends Downloader
             $videosInfo = ArrayHelper::multisort($json['data']['stream'], 'width', SORT_DESC);
 
             $this->videoQuality = $videosInfo[0]['stream_type'];
+            $this->playlist = $videosInfo;
+
+            //show playlist
+            if(isset($argvOpt['i'])){
+                $this->outPlaylist();
+            }
 
             $fileTotalSize = 0;
             $fileSizeArr = [];

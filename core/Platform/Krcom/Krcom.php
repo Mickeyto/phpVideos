@@ -24,9 +24,10 @@ class Krcom extends Downloader
     }
 
     /**
+     * @param null $argvOpt
      * @throws ErrorException
      */
-    public function download():void
+    public function download($argvOpt=null):void
     {
         $fileKey = md5($this->requestUrl);
 
@@ -88,6 +89,12 @@ class Krcom extends Downloader
         $this->setVideosTitle($videosTitle);
         $this->videoQuality = $tempArray[0]['plate'];
         $this->downloadUrls[0] = $tempArray[0]['url'];
+        $this->playlist = $tempArray;
+
+        //show playlist
+        if(isset($argvOpt['i'])){
+            $this->outPlaylist();
+        }
 
         $this->downloadFile();
         $this->success($this->ffmpFileListTxt);

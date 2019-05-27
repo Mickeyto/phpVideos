@@ -11,6 +11,44 @@ namespace core\Command;
 
 class Console
 {
+    public static function initArgv():array
+    {
+        $cmd = [];
+        global $argv;
+        foreach($argv as $k => $arg){
+            if(0 == $k){
+                continue;
+            }
+            switch ($arg){
+                case '-i':
+                    $cmd['i'] = true;
+                    break;
+                case '-h':
+                    self::usage();
+                    break;
+                default:
+                    $cmd['url'] = $arg;
+                    break;
+            }
+        }
+
+        return $cmd;
+    }
+
+    public static function usage()
+    {
+        echo <<<EOF
+Usage:
+    -i:     show playlist
+
+Examples:
+    show playlist:      php start.php 'video_url' -i
+    download video:     php start.php 'video_url'
+
+EOF;
+        exit(1);
+    }
+
     /**
      * @return string
      */

@@ -201,9 +201,10 @@ JAVASCRIPT;
     }
 
     /**
+     * @param null $argvOpt
      * @throws ErrorException
      */
-    public function download(): void
+    public function download($argvOpt=null): void
     {
         $videoId = $this->matchVideoIdAndTitle();
         $videoDetail = $this->videoDetail($videoId);
@@ -215,10 +216,16 @@ JAVASCRIPT;
 
         $this->videoQuality = $videosInfo['definition'];
         $this->downloadUrls = [$videoUrl];
+        $this->playlist = [$videoUrl];
         $fileSizeArray = [
             'totalSize' => $videosInfo['size'],
             'list' => 1024,
         ];
+
+        //show playlist
+        if(isset($argvOpt['i'])){
+            $this->outPlaylist();
+        }
 
         $this->fileExt = '.mp4';
         $header = [

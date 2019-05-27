@@ -152,9 +152,10 @@ class Weibo extends Downloader
 
     /**
      * html5 Url: https://m.weibo.cn/status/Gte2peqo6?fid=1034%3A4269653577684456&jumpfrom=weibocom
+     * @param null $argvOpt
      * @throws ErrorException
      */
-    public function download(): void
+    public function download($argvOpt=null): void
     {
         $vid = $this->getVid();
 
@@ -175,12 +176,19 @@ class Weibo extends Downloader
             $this->downloadUrls[0] = array_pop($videosInfo['url']);
             if(empty($this->downloadUrls[0])){
                 $this->downloadUrls[0] = array_shift($videosInfo['url']);
+                $this->playlist[0] = array_shift($videosInfo['url']);
                 $this->videoQuality = array_shift($videosInfo['stream']);
             }
         } else {
             $videoList = ArrayHelper::multisort($videosInfo['videoInfo'], 'qType', SORT_DESC);
             $this->videoQuality = $videoList[0]['qType'];
             $this->downloadUrls[0] = $videoList[0]['url'];
+            $this->playlist = $videoList;
+        }
+
+        //show playlist
+        if(isset($argvOpt['i'])){
+            $this->outPlaylist();
         }
 
         $downloadFileInfo = $this->downloadFile();

@@ -127,9 +127,10 @@ class Twitter extends Downloader
     }
 
     /**
+     * @param null $argvOpt
      * @throws ErrorException
      */
-    public function download(): void
+    public function download($argvOpt=null): void
     {
         $vid = $this->getVid();
 
@@ -143,11 +144,13 @@ class Twitter extends Downloader
             $mp4Info = array_shift($videoUrlInfo);
 
             $this->downloadUrls[0] = $mp4Info['url'];
+            $this->playlist[0] = $mp4Info['url'];
             $this->videoQuality = $mp4Info['content_type'];
         } else {
             $m3u8Urls = $this->getM3u8($videosInfoGroup);
 
             $this->downloadUrls = $m3u8Urls;
+            $this->playlist = $m3u8Urls;
             $this->fileExt = '.ts';
         }
 
@@ -161,6 +164,11 @@ class Twitter extends Downloader
             $curlProxy = [
                 CURLOPT_PROXY => $httpProxy,
             ];
+        }
+
+        //show playlist
+        if(isset($argvOpt['i'])){
+            $this->outPlaylist();
         }
 
         $this->setVideosTitle($videoInfo['title']);

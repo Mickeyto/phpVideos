@@ -17,32 +17,36 @@ function checkVersion()
 
 checkVersion();
 
-$args = array_slice($argv, 1);
-if(empty($args)){
+$argvOpt = \core\Command\Console::initArgv();
+
+if(empty($argvOpt)){
     printf("请传入参数 \n");
     die;
 }
 
-$url = $args[0];
-$domain = parse_url($url, PHP_URL_HOST);
 
+$url = $argvOpt['url'];
 $domain = \core\Http\Domain::match($url);
+$class = null;
 
-if($domain){
-    if(in_array($domain, ['91p25', '91porn'])){
-        $domain = 'Porn';
-    }
-
-    $className = "\core\Platform\\$domain\\" . $domain;
-
-    $classFile = __DIR__ . str_replace('\\', DIRECTORY_SEPARATOR, $className);
-    if(!file_exists($classFile.'.php')){
-        echo("\033[31m  No Support \033[0m".PHP_EOL);
-        exit(0);
-    }
-
-    $class = new $className($url);
-    $class->download();
+if(empty($domain)){
+    exit(0);
 }
 
-echo "\n";
+if(in_array($domain, ['91p25', '91porn'])){
+    $domain = 'Porn';
+}
+
+$className = "\core\Platform\\$domain\\" . $domain;
+
+$classFile = __DIR__ . str_replace('\\', DIRECTORY_SEPARATOR, $className);
+if(!file_exists($classFile.'.php')){
+    echo("\033[31m  No Support \033[0m".PHP_EOL);
+    exit(0);
+}
+
+/**
+ * @var $class \core\Common\Downloader
+ */
+$class = new $className($url);
+$class->download($argvOpt);
