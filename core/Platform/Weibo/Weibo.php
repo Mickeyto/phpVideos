@@ -18,6 +18,9 @@ use \ErrorException;
 
 class Weibo extends Downloader
 {
+    private const WEIBO_SHOW_API = 'https://m.weibo.cn/statuses/show?id=';
+    private const WEIBO_VIDEO_OBJECT_API = 'https://m.weibo.cn/s/video/object?';
+
     public function __construct(string $url)
     {
         $this->requestUrl = $url;
@@ -96,7 +99,7 @@ class Weibo extends Downloader
      */
     public function getVideosInfo(string $vid):?array
     {
-        $getJsonUrl = 'https://m.weibo.cn/statuses/show?id=' . $vid;
+        $getJsonUrl = self::WEIBO_SHOW_API . $vid;
 
         $getInfo = Curl::get($getJsonUrl, $this->requestUrl);
         $videosInfo = [];
@@ -104,12 +107,7 @@ class Weibo extends Downloader
         if(!empty($getInfo[0])){
             $json = json_decode($getInfo[0], true);
             if(1 != $json['ok']){
-                $cookie = Config::instance()->get('weiboCookie');
-                if(empty($cookie)){
-                    Console::stdout('请输入 Cookie：');
-                    $cookie = Console::stdin();
-                }
-
+                $cookie = $this->getConfigCookie();
                 if(!empty($cookie)){
                     $header = [
                         CURLOPT_COOKIE => $cookie,
@@ -125,6 +123,10 @@ class Weibo extends Downloader
             }
 
             if(empty($json['data']['page_info']['media_info'])){
+                $videosInfo = $this->getVideoObject();
+                if(count($videosInfo) > 0){
+                    return $videosInfo;
+                }
                 $this->error('Error：media_info is empty');
             }
 
@@ -151,6 +153,70 @@ class Weibo extends Downloader
     }
 
     /**
+     * @note https://m.weibo.cn/s/video/object?object_id={}&mid={}
+     * @return array
+     * @throws ErrorException
+     */
+    public function getVideoObject():array
+    {
+        $parseurlInfo = parse_url($this->requestUrl, PHP_URL_QUERY);
+        parse_str($parseurlInfo, $params);
+        if(!isset($params['object_id'])){
+            $this->error('not object_id');
+        }
+
+        if(!isset($params['blog_mid'])){
+            $this->error('not blog_mid');
+        }
+
+        $videosInfo = [];
+        $apiUrl = self::WEIBO_VIDEO_OBJECT_API;
+        $apiUrl .= 'object_id=' . $params['object_id']  . '&mid=' . $params['blog_mid'];
+        $cookie = $this->getConfigCookie();
+        if(!empty($cookie)){
+            $header = [
+                CURLOPT_COOKIE => $cookie,
+            ];
+            $json = Curl::get($apiUrl, $this->requestUrl, $header);
+            if(empty($json[0])){
+                $this->error('Error: get video object');
+            }
+
+            $json = json_decode($json[0], true);
+            $videoData = $json['data'];
+            $title = $videoData['object']['author']['screen_name'] . '-' . $params['object_id'];
+            $mediaInfo = [];
+            if(isset($videoData['object']['stream']['hd_url'])){
+                array_push($mediaInfo, $videoData['object']['stream']['hd_url']);
+            } else {
+                array_push($mediaInfo, $videoData['object']['stream']['url']);
+            }
+
+            $videosInfo = [
+                'type' => 'api',
+                'title' => $title,
+                'url' => $mediaInfo,
+                'size' => 1024,
+                'stream' => [$videoData['object']['stream']['width']],
+            ];
+
+        }
+
+        return $videosInfo;
+    }
+
+    public function getConfigCookie():?string
+    {
+        $cookie = Config::instance()->get('weiboCookie');
+        if(empty($cookie)){
+            Console::stdout('请输入 Cookie：');
+            $cookie = Console::stdin();
+        }
+
+        return $cookie;
+    }
+
+    /**
      * html5 Url: https://m.weibo.cn/status/Gte2peqo6?fid=1034%3A4269653577684456&jumpfrom=weibocom
      * @param null $argvOpt
      * @throws ErrorException
@@ -164,7 +230,6 @@ class Weibo extends Downloader
         }
 
         $videosInfo = $this->getVideosInfo($vid);
-
         if(empty($videosInfo)){
             $this->error('Error：VideosInfo is empty');
         }
@@ -172,11 +237,13 @@ class Weibo extends Downloader
         $this->setVideosTitle($videosInfo['title']);
 
         if($videosInfo['type'] == 'api'){
+            $this->playlist = $videosInfo['url'];
             $this->videoQuality = array_pop($videosInfo['stream']);
             $this->downloadUrls[0] = array_pop($videosInfo['url']);
             if(empty($this->downloadUrls[0])){
-                $this->downloadUrls[0] = array_shift($videosInfo['url']);
-                $this->playlist[0] = array_shift($videosInfo['url']);
+                $videourl = array_shift($videosInfo['url']);
+                $this->downloadUrls[0] = $videourl;
+                $this->playlist[0] = $videourl;
                 $this->videoQuality = array_shift($videosInfo['stream']);
             }
         } else {
