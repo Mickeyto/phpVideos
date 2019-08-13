@@ -75,19 +75,18 @@ class Porn extends Downloader
     }
 
     /**
-     * @param array $curlProxy
+     * @param array $headers
      * @return array|bool|null
      * @throws ErrorException
      */
-    public function getVideosUrl(array $curlProxy=[]):?array
+    public function getVideosUrl(array $headers=[]):?array
     {
         $videosUrlCache = (new FileCache())->get($this->requestUrl);
         if($videosUrlCache){
             return $videosUrlCache;
         }
 
-        $html = Curl::get($this->requestUrl, $this->requestUrl, $curlProxy, false);
-
+        $html = Curl::get($this->requestUrl, $this->requestUrl, $headers, false);
         if(empty($html[0])){
             $this->error('Error：not found html');
         }
@@ -135,14 +134,18 @@ class Porn extends Downloader
     public function download($argvOpt=null):void
     {
         $httpProxy = Config::instance()->get('http_proxy');
-        $curlProxy = [];
+        $pornConfig = Config::instance()->get('91porn');
+        $userAgent = Config::instance()->get('user_agent');
+        $headers = [
+            CURLOPT_USERAGENT => !empty($pornConfig['user_agent']) ? $pornConfig['user_agent'] : $userAgent,
+            CURLOPT_COOKIE => $pornConfig['cookie'],
+        ];
+
         if($httpProxy){
-            $curlProxy = [
-                CURLOPT_PROXY => $httpProxy,
-            ];
+            $headers[CURLOPT_PROXY] = $httpProxy;
         }
 
-        $videosUrl = $this->getVideosUrl($curlProxy);
+        $videosUrl = $this->getVideosUrl($headers);
 
         $this->videosTitle = $videosUrl['title'];
         $this->downloadUrls[0] = $videosUrl['url'];
@@ -153,7 +156,7 @@ class Porn extends Downloader
             $this->outPlaylist();
         }
 
-        $this->downloadFile(['totalSize' => self::DEFAULT_FILESIZE, 'list' => [self::DEFAULT_FILESIZE]], $curlProxy);
+        $this->downloadFile(['totalSize' => self::DEFAULT_FILESIZE, 'list' => [self::DEFAULT_FILESIZE]], $headers);
         $this->success($this->ffmpFileListTxt);
     }
 

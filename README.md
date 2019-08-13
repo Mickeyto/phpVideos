@@ -1,3 +1,4 @@
+[中文文档](README_CN.md)
 # phpVideos
 
 |   SITE  |   VIDEO  |
@@ -29,15 +30,24 @@
 Discord：https://discord.gg/xvNQPaT
 
 #   http proxy config
+```bash
+cp config-template.php config.php
+```
 *  config.php
+```php
+return [
+    'http_proxy' => '127.0.0.1:1087',
+    'weiboCookie' => '',
 
-    <pre>
-    return [
-        //http proxy
-        'http_proxy' => 'http://127.0.0.1:1087',
-        'weiboCookie' => '',//Weibo Cookie
-    ];
-    </pre>
+    'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+
+    //91porn
+    '91porn' => [
+        'cookie' => '',
+        'user_agent' => '',
+    ]
+];
+```
     
 #   Usage
 php start.php 'link_address'

@@ -32,15 +32,25 @@ Discord地址：https://discord.gg/xvNQPaT
 QQ 群：<img src="https://i.ibb.co/DtvFF1k/8-AC40-BE4-F5-D21-B030-E17-E4-C27-CB87-AC0.jpg" height="50%">
 
 #   代理配置
+```bash
+cp config-template.php config.php
+```
 *  config.php
 
-    <pre>
-    return [
-        //http 代理配置
-        'http_proxy' => 'http://127.0.0.1:1087',
-        'weiboCookie' => '',//微博 Cookie 配置
-    ];
-    </pre>
+```php
+return [
+    'http_proxy' => '127.0.0.1:1087',
+    'weiboCookie' => '',
+
+    'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+
+    //91porn
+    '91porn' => [
+        'cookie' => '',
+        'user_agent' => '',
+    ]
+];
+```
     
 #   使用方法
 php start.php 'link_address'
@@ -58,3 +68,6 @@ curl 升级之后， php 需要重新编译，不能单独编译 php-curl 扩展
 
 # Windows10 使用教程
 https://youtu.be/KPKoTLtGNOs
+
+# 更新日志
+1. 2019-08-13：91porn 启用了谷歌人机验证，解决【在浏览器点击谷歌人机验证后进入官网，F12 复制请求头 Cookie 、User-Agent 两项信息到 config.php 文件中的 91porn 配置项】

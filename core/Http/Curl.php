@@ -8,6 +8,7 @@
 namespace core\Http;
 
 use core\Cache\FileCache;
+use core\Config\Config;
 use \ErrorException;
 
 class Curl
@@ -88,11 +89,11 @@ class Curl
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_REFERER => $httpReferer,
+            CURLOPT_USERAGENT => Config::instance()->get('user_agent'),
             CURLOPT_HTTPHEADER => [
                 "Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 //                "Accept-Encoding:gzip, deflate, br",
                 "Accept-Language:zh-CN,en-US;q=0.7,en;q=0.3",
-                "User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
                 "HTTP_X_FORWARDED_FOR:{$ip}",
                 "CLIENT-IP:{$ip}"
             ]
