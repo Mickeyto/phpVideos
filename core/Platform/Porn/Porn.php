@@ -8,9 +8,11 @@
 namespace core\Platform\Porn;
 
 use core\Cache\FileCache;
+use core\Command\Console;
 use core\Common\Downloader;
 use core\Config\Config;
 use core\Http\Curl;
+use core\Utils\Aria2Client;
 use \ErrorException;
 use core\Common\StringHelper;
 
@@ -133,6 +135,7 @@ class Porn extends Downloader
      */
     public function download($argvOpt=null):void
     {
+        $aria2Config = Config::instance()->get('aria2');
         $httpProxy = Config::instance()->get('http_proxy');
         $pornConfig = Config::instance()->get('91porn');
         $userAgent = Config::instance()->get('user_agent');
@@ -156,7 +159,15 @@ class Porn extends Downloader
             $this->outPlaylist();
         }
 
-        $this->downloadFile(['totalSize' => self::DEFAULT_FILESIZE, 'list' => [self::DEFAULT_FILESIZE]], $headers);
+        //aria2 download
+        if(isset($argvOpt['ar'])){
+            $jsonrpcPath = $aria2Config['jsonrpc_path'];
+            $aria2 = new Aria2Client($jsonrpcPath);
+            $aria2->addUri("token:{$aria2Config['token']}", $this->downloadUrls);
+        } else {
+            $this->downloadFile(['totalSize' => self::DEFAULT_FILESIZE, 'list' => [self::DEFAULT_FILESIZE]], $headers);
+        }
+
         $this->success($this->ffmpFileListTxt);
     }
 

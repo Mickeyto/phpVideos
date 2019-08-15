@@ -13,6 +13,7 @@ use core\Common\FFmpeg;
 use core\Common\M3u8;
 use core\Config\Config;
 use core\Http\Curl;
+use core\Utils\Aria2Client;
 use \ErrorException;
 
 class Xvideos extends Downloader
@@ -179,6 +180,7 @@ class Xvideos extends Downloader
      */
     public function download($argvOpt=null):void
     {
+        $aria2Config = Config::instance()->get('aria2');
         $httpProxy = Config::instance()->get('http_proxy');
         $curlProxy = [];
         if($httpProxy){
@@ -207,6 +209,16 @@ class Xvideos extends Downloader
         //show playlist
         if(isset($argvOpt['i'])){
             $this->outPlaylist();
+        }
+
+        //webui-aria2 download
+        if(isset($argvOpt['ar'])){
+            $jsonrpcPath = $aria2Config['jsonrpc_path'];
+            $aria2 = new Aria2Client($jsonrpcPath);
+            foreach($this->downloadUrls as $row){
+                $aria2->addUri("token:{$aria2Config['token']}", [$row],);
+            }
+            $this->success();exit(1);
         }
 
         $this->fileExt = '.ts';

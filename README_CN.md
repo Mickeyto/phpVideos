@@ -58,6 +58,11 @@ php start.php 'link_address'
 php start.php 'link_address' -i //show playlist
 ![image](https://image.ibb.co/mysKyd/Jul_21_2018_21_38_34.gif)
 
+*   使用 webui-aria2 下载
+```bash
+php start.php 'link_address' -ar
+```
+
 #   其他
 Centos7 默认的 curl 版本是 7.29 的，需要升级。升级方法：
 <pre>

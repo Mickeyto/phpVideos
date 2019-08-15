@@ -26,6 +26,9 @@ class Console
                 case '-h':
                     self::usage();
                     break;
+                case '-ar':
+                    $cmd['ar'] = true;
+                    break;
                 default:
                     $cmd['url'] = $arg;
                     break;
@@ -40,7 +43,7 @@ class Console
         echo <<<EOF
 Usage:
     -i:     show playlist
-
+    -ar     webui-aria2 download
 Examples:
     show playlist:      php start.php 'video_url' -i
     download video:     php start.php 'video_url'

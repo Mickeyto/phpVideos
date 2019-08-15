@@ -55,6 +55,11 @@ php start.php 'link_address'
 php start.php 'link_address' -i //show playlist
 ![image](https://image.ibb.co/mysKyd/Jul_21_2018_21_38_34.gif)
 
+*   webui-aria2 download
+```bash
+php start.php 'link_address' -ar
+```
+
 #   Other
 CentOS 7
 <pre>
