@@ -98,7 +98,8 @@ class Porn extends Downloader
             $this->error('Error：not found title');
         }
 
-        preg_match_all('/<source\ssrc="(.*)"\stype="video\/mp4">/', $html[0], $matchesVideo);
+        preg_match_all('/<source\ssrc="(.*)"\stype=["|\']video\/mp4["|\']>/', $html[0], $matchesVideo);
+
         if(!isset($matchesVideo[1][0])){
             preg_match_all('/strencode\((.*)\)\);/', $html[0], $matchesVideo);
             if(!isset($matchesVideo[1][0])){
