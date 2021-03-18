@@ -17,29 +17,7 @@ function checkVersion()
 
 checkVersion();
 
-$argvOpt = \core\Command\Console::initArgv();
-
-if(empty($argvOpt)){
-    printf("请传入参数 \n");
-    die;
-}
-
-
-$url = $argvOpt['url'];
-$domain = \core\Http\Domain::match($url);
-$class = null;
-
-if(empty($domain)){
-    exit(0);
-}
-
-if(in_array($domain, ['91p25', '91porn'])){
-    $domain = 'Porn';
-}
-if(in_array($domain, ['Bdstatic'])){
-    $domain = 'Haokan';
-}
-
+$domain = 'Haokan';
 $className = "\core\Platform\\$domain\\" . $domain;
 
 $classFile = __DIR__ . str_replace('\\', DIRECTORY_SEPARATOR, $className);
@@ -48,8 +26,21 @@ if(!file_exists($classFile.'.php')){
     exit(0);
 }
 
+
+$contents = file_get_contents('haokan.json');
+$contents = json_decode($contents, true);
+$_data = $contents['column/detail']['data'];
+$_authorTitle = str_replace(' ', '', $_data['title']);
+
 /**
  * @var $class \core\Common\Downloader
  */
-$class = new $className($url);
-$class->download($argvOpt);
+foreach($_data['items'] as $_lists){
+    $_hdurls = isset($_lists['video_list']['1080p']) ? $_lists['video_list']['1080p'] : $_lists['video_list']['hd'];
+    $_titles = str_replace(' ', '', $_lists['title']);
+    $_titles .= '-'. str_replace(' ', '', $_lists['ext']['episodes']);
+
+    $class = new $className($_hdurls);
+    $class->videosTitle = $_authorTitle . '-' . $_titles;
+    $class->download();
+}
