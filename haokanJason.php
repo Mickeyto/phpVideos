@@ -29,18 +29,32 @@ if(!file_exists($classFile.'.php')){
 
 $contents = file_get_contents('haokan.json');
 $contents = json_decode($contents, true);
-$_data = $contents['column/detail']['data'];
-$_authorTitle = str_replace(' ', '', $_data['title']);
+$_authorTitle = '';
+$_data['items'] = [];
+if(isset($contents['videolistall'])){
+    $_data['items'] = $contents['videolistall']['data']['results'];
+}
+if(isset($contents['column/detail'])){
+    $_data = $contents['column/detail']['data'];
+    $_authorTitle = str_replace(' ', '', $_data['title']);
+}
 
 /**
  * @var $class \core\Common\Downloader
  */
+$_count = count($_data['items']);
+$_run = 0;
 foreach($_data['items'] as $_lists){
-    $_hdurls = isset($_lists['video_list']['1080p']) ? $_lists['video_list']['1080p'] : $_lists['video_list']['hd'];
-    $_titles = str_replace(' ', '', $_lists['title']);
-    $_titles .= '-'. str_replace(' ', '', $_lists['ext']['episodes']);
+    $_run++;
+    $_videoList = isset($_lists['content']) ? $_lists['content'] : $_lists;
+    $_authorTitle = empty($_authorTitle) ? $_videoList['author'] : $_authorTitle;
+    $_videoQuality = isset($_videoList['video_list']['1080p']) ? '1080p' : 'hd';
+    $_hdurls = isset($_videoList['video_list']['1080p']) ? $_videoList['video_list']['1080p'] : $_videoList['video_list']['hd'];
+    $_titles = str_replace(' ', '', $_videoList['title']);
+    $_titles .= '-'. str_replace(' ', '', !empty($_videoList['ext']) ? $_videoList['ext']['episodes'] : '');
 
     $class = new $className($_hdurls);
     $class->videosTitle = $_authorTitle . '-' . $_titles;
+    $class->videoQuality = sprintf('%d/%d-%s', $_run, $_count, $_videoQuality);
     $class->download();
 }
