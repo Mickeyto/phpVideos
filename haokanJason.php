@@ -38,6 +38,9 @@ if(isset($contents['column/detail'])){
     $_data = $contents['column/detail']['data'];
     $_authorTitle = str_replace(' ', '', $_data['title']);
 }
+if(isset($contents['baijia/listall'])){
+    $_data['items'] = $contents['baijia/listall']['data']['results'];
+}
 
 /**
  * @var $class \core\Common\Downloader
@@ -47,6 +50,10 @@ $_run = 0;
 foreach($_data['items'] as $_lists){
     $_run++;
     $_videoList = isset($_lists['content']) ? $_lists['content'] : $_lists;
+    if(!isset($_videoList['video_list']['hd'])){
+        \core\Command\Console::stdout("Pass\n");
+        continue;
+    }
     $_authorTitle = empty($_authorTitle) ? $_videoList['author'] : $_authorTitle;
     $_videoQuality = isset($_videoList['video_list']['1080p']) ? '1080p' : 'hd';
     $_hdurls = isset($_videoList['video_list']['1080p']) ? $_videoList['video_list']['1080p'] : $_videoList['video_list']['hd'];
