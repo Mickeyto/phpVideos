@@ -69,3 +69,8 @@ yum --enablerepo=city-fan.org update curl
 
 # Windows10
 https://youtu.be/KPKoTLtGNOs
+
+# 小程序
+
+![去水印视界 png](https://user-images.githubusercontent.com/20398129/140766786-8c449d88-9464-4969-8f4d-7b364882c387.png)
+
